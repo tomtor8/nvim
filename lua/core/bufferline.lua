@@ -22,10 +22,8 @@ function _G.simple_bufferline()
 
 	for i, buf in ipairs(bufs) do
 		local is_active = buf.bufnr == cur_buf
-
 		-- Start Highlight Group
 		s = s .. (is_active and "%#TabLineSel#" or "%#TabLine#")
-
 		-- ADDED: Start Clickable Area
 		-- The syntax is %@Func_Name@ ... %X
 		-- We pass the bufnr as the argument to switch_buffer_click
@@ -43,7 +41,13 @@ function _G.simple_bufferline()
 		end
 	end
 
-	s = s .. "%#TabLineFill#%T"
+	s = s .. "%#TabLineFill#%="
+
+	-- Add parent directory of the active buffer on the right side
+	local cur_name = a.nvim_buf_get_name(cur_buf)
+	local dir = (cur_name ~= "") and vim.fn.fnamemodify(cur_name, ":p:h:t") or vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+
+	s = s .. "%#TabLine# 󰉋 " .. dir .. " "
 	return s
 end
 
@@ -52,4 +56,6 @@ o.showtabline = 2 -- set to 0 to disable
 
 -- Add padding bewtween bufferline and buffer itself
 a.nvim_set_hl(0, "WinBarSpacer", { fg = "#161922", bg = "none" })
-o.winbar = "%#WinBarSpacer#────────────────"
+-- o.winbar = "%#WinBarSpacer#────────────────"
+-- Shows the directory followed by the line
+o.winbar = "%#WinBarSpacer# 󰉋 %{v:lua.vim.fn.fnamemodify(v:lua.vim.api.nvim_buf_get_name(0), ':p:h:t')} ──"
