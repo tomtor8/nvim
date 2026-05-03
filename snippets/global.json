@@ -1,0 +1,12 @@
+{
+  "Header 4": { "prefix": "h4", "body": "<h4>${0:text}</h4>" },
+  "Color tag": { "prefix": "ct", "body": "<color orange>${1:text}</color>$0" },
+  "Placeholders": { "prefix": "pl", "body": "T1=${1:aa}\nT2=${2:<$1>}" },
+  "Choices": { "prefix": "ch", "body": "T1=${1|a,b|} T2=${2|c,d|}" },
+  "Linked": { "prefix": "li", "body": "T1=$1\n\tT1=$1" },
+  "Variables": { "prefix": "va", "body": "Runtime: $VIMRUNTIME\n" },
+  "Complex": {
+    "prefix": "co",
+    "body": ["T1=${1:$RANDOM}", "T3=${3:$1_${2:$1}}", "T2=$2"]
+  }
+}

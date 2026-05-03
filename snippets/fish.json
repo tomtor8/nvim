@@ -1,0 +1,86 @@
+{
+  "SHELL BOILERPLATE & IMPORTS {{{1": {},
+
+  "Shebang": {
+    "prefix": "sb",
+    "body": ["#!/usr/bin/env fish", ""],
+    "description": "Fish shebang"
+  },
+  "Source File": {
+    "prefix": "so",
+    "body": ["source ${1:path/to/file.fish}"],
+    "description": "Source a fish file"
+  },
+
+  "FUNCTION & ALIAS DEFINITIONS {{{1": {},
+
+  "Fish Function": {
+    "prefix": "func",
+    "body": [
+      "function ${1:function_name} --description '${2:description}'",
+      "\t${3:pass}${0}",
+      "end"
+    ],
+    "description": "Define a function with fold markers"
+  },
+  "Abbreviation": {
+    "prefix": "abbr",
+    "body": ["abbr -a ${1:short} ${2:long}"],
+    "description": "Add a shell abbreviation"
+  },
+
+  "LOOPS & LOGIC {{{1": {},
+
+  "If Statement": {
+    "prefix": "if",
+    "body": ["if ${1:condition}", "\t${2:pass}", "end", "$0"],
+    "description": "If block"
+  },
+  "For Loop": {
+    "prefix": "for",
+    "body": ["for ${1:var} in ${2:list}", "\t${3:echo}${0}", "end"],
+    "description": "For loop"
+  },
+  "Switch Case": {
+    "prefix": "switch",
+    "body": [
+      "switch ${1:value}",
+      "\tcase ${2:pattern}",
+      "\t\t${3:pass}${0}",
+      "end"
+    ],
+    "description": "Switch statement"
+  },
+  "Check Path": {
+    "prefix": "ifpath",
+    "body": ["if test -d ${1:path}", "\t${2:pass}${0}", "end"],
+    "description": "Check if directory exists"
+  },
+
+  "VARIABLES & PATHS {{{1": {},
+
+  "Set Variable": {
+    "prefix": "set",
+    "body": ["set -gx ${1:VAR_NAME} ${2:value}"],
+    "description": "Set global exported variable"
+  },
+  "Add to Path": {
+    "prefix": "path",
+    "body": ["fish_add_path ${1:path_to_add}"],
+    "description": "Add directory to PATH safely"
+  },
+
+  "PRINTING & DEBUGGING {{{1": {},
+
+  "Echo": {
+    "prefix": "ec",
+    "body": ["echo \"${1:message}\""],
+    "description": "Echo message"
+  },
+  "Print Error": {
+    "prefix": "pe",
+    "body": ["echo \"${1:error}\" >&2"],
+    "description": "Print to stderr"
+  },
+  "}}}1": {}
+}
