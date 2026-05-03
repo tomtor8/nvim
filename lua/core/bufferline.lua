@@ -16,32 +16,83 @@ function _G.switch_buffer_click(bufnr, _, button, _)
 end
 
 function _G.simple_bufferline()
-	local s = ""
 	local bufs = vim.fn.getbufinfo({ buflisted = 1 })
 	local cur_buf = a.nvim_get_current_buf()
+	local cur_idx = 1
 
+	-- 1. Find the index of the current buffer
 	for i, buf in ipairs(bufs) do
+		if buf.bufnr == cur_buf then
+			cur_idx = i
+			break
+		end
+	end
+
+	-- 2. Calculate available width (leaving a small margin)
+	local available_width = vim.o.columns - 10
+	local current_width = 0
+	local start_idx, end_idx = cur_idx, cur_idx
+
+	-- Helper to estimate the width of a single tab
+	local function get_tab_width(buf)
+		local name = buf.name ~= "" and vim.fn.fnamemodify(buf.name, ":t") or "[No Name]"
+		local modified = a.nvim_get_option_value("modified", { buf = buf.bufnr }) and 3 or 0
+		return #name + modified + 4 -- padding + separator
+	end
+
+	-- 3. Expand the "window" of visible buffers bi-directionally
+	current_width = get_tab_width(bufs[cur_idx])
+	while true do
+		local expanded = false
+		-- Try to add a buffer to the left
+		if start_idx > 1 then
+			local w = get_tab_width(bufs[start_idx - 1])
+			if current_width + w < available_width then
+				start_idx = start_idx - 1
+				current_width = current_width + w
+				expanded = true
+			end
+		end
+		-- Try to add a buffer to the right
+		if end_idx < #bufs then
+			local w = get_tab_width(bufs[end_idx + 1])
+			if current_width + w < available_width then
+				end_idx = end_idx + 1
+				current_width = current_width + w
+				expanded = true
+			end
+		end
+		if not expanded then
+			break
+		end
+	end
+
+	-- 4. Build the string only for the visible range
+	local s = ""
+	if start_idx > 1 then
+		s = "%#TabLine# 󰇘 "
+	end -- Left indicator
+
+	for i = start_idx, end_idx do
+		local buf = bufs[i]
 		local is_active = buf.bufnr == cur_buf
 
-		-- Start Highlight Group
 		s = s .. (is_active and "%#TabLineSel#" or "%#TabLine#")
-
-		-- ADDED: Start Clickable Area
-		-- The syntax is %@Func_Name@ ... %X
-		-- We pass the bufnr as the argument to switch_buffer_click
 		s = s .. "%" .. buf.bufnr .. "@v:lua.switch_buffer_click@"
 
 		local name = buf.name ~= "" and vim.fn.fnamemodify(buf.name, ":t") or "[No Name]"
 		local modified = a.nvim_get_option_value("modified", { buf = buf.bufnr }) and " 󰰐" or ""
 		s = s .. " " .. name .. modified .. " "
-
-		-- ADDED: End Clickable Area
 		s = s .. "%X"
 
-		if i < #bufs then
+		if i < end_idx then
 			s = s .. "%#TabSeparator#│"
 		end
 	end
+
+	if end_idx < #bufs then
+		s = s .. "%#TabLine# 󰇘 "
+	end -- Right indicator
 
 	s = s .. "%#TabLineFill#%T"
 	return s
