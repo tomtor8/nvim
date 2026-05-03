@@ -20,62 +20,79 @@ local mode_map = {
 	["R"] = { name = " R ", hl = "StatusReplace" },
 }
 
+-- Combined LSP Names and Progress {{{1
+local function get_lsp_status()
+	local clients = vim.lsp.get_clients({ bufnr = 0 })
+	if #clients == 0 then
+		return ""
+	end
 
--- New: LSP Progress using 0.12 native API {{{1
-local function get_lsp_progress()
-    -- This returns a string like "Searching..." or "Indexing..."
-    local progress = vim.ui.progress_status()
-    if progress == "" then return "" end
-    return string.format(" %%#StatusLspName#%s%%#StatusLine# ", progress)
+	-- Collect all active client names
+	local names = {}
+	for _, client in ipairs(clients) do
+		table.insert(names, client.name)
+	end
+	local client_names = table.concat(names, ", ")
+
+	-- Get the 0.12 progress status
+	local progress = vim.ui.progress_status()
+
+	-- Format: [lua_ls, rust_analyzer] Indexing...
+	local display = string.format("[%s]", client_names)
+	if progress ~= "" then
+		display = display .. " " .. progress
+	end
+
+	return string.format(" %%#StatusLspName#%s%%#StatusLine# ", display)
 end
 
 -- New: Terminal Exit Code {{{1
 local function get_terminal_status()
-    -- Check if we are in a terminal buffer and it has exited
-    if vim.bo.buftype ~= "terminal" then return "" end
-    
-    -- Neovim sets b:terminal_job_status on exit
-    local status = vim.b.terminal_job_status
-    if status then
-        local hl = status == 0 and "%#StatusNormal#" or "%#StatusError#"
-        return string.format(" %s[Exit: %d]%%#StatusLine# ", hl, status)
-    end
-    return " %#StatusGit#[Running]%#StatusLine# "
+	-- Check if we are in a terminal buffer and it has exited
+	if vim.bo.buftype ~= "terminal" then
+		return ""
+	end
+
+	-- Neovim sets b:terminal_job_status on exit
+	local status = vim.b.terminal_job_status
+	if status then
+		local hl = status == 0 and "%#StatusNormal#" or "%#StatusError#"
+		return string.format(" %s[Exit: %d]%%#StatusLine# ", hl, status)
+	end
+	return " %#StatusGit#[Running]%#StatusLine# "
 end
 
 -- Main statusline function {{{1
 function _G.simple_statusline()
 	local mode_info = mode_map[vim.api.nvim_get_mode().mode] or mode_map["n"]
 	local current_dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-	
-    -- Search count logic
+
 	local s_info = vim.fn.searchcount({ maxcount = 999, timeout = 500 })
 	local search = ""
 	if s_info and s_info.total and s_info.total > 0 and vim.v.hlsearch ~= 0 then
 		search = string.format(" [%d/%d] ", s_info.current, s_info.total)
 	end
 
-    -- 0.12 Native Diagnostics
-    -- This automatically handles icons and counts based on your diagnostic config
-    local diags = vim.diagnostic.status()
-    if diags ~= "" then
-        diags = " " .. diags .. " "
-    end
+	-- Use 0.12 native diagnostic status
+	local diags = vim.diagnostic.status()
+	if diags ~= "" then
+		diags = " " .. diags .. " "
+	end
 
 	local git = get_git_status()
-    local progress = get_lsp_progress()
-    local term = get_terminal_status()
+	local lsp = get_lsp_status() -- Now includes names and progress
+	local term = get_terminal_status()
 
 	return string.format(
 		"%%#%s#%s%%#StatusLine# 󰉋 %s%s %%m%s%s %%=%s%s%%l:%%c %%p%%%% ",
 		mode_info.hl,
 		mode_info.name,
 		current_dir,
-        git,
+		git,
 		search,
-        term,     -- Shows terminal status if applicable
-		diags,    -- Native diagnostic status
-		progress  -- Native LSP progress
+		term,
+		diags,
+		lsp
 	)
 end
 
