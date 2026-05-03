@@ -15,7 +15,7 @@ function CustomFoldText()
 	cleaned_line = cleaned_line:gsub("{{{.*", "") -- Removes marker and everything after
 	cleaned_line = cleaned_line:gsub("%s*$", "") -- Trims trailing whitespace
 	local indent = string.rep("  ", level - 1)
-	local icon = "󰉈 L" .. level
+	local icon = "󰉈 " .. level
 	local line_count = vim.v.foldend - vim.v.foldstart + 1
 	return indent .. icon .. " │ " .. cleaned_line .. " (" .. line_count .. " lines)"
 end

@@ -67,15 +67,16 @@ function _G.simple_statusline()
 	local lsp = get_lsp_status() -- Now includes names and progress
 	-- local term = get_terminal_status()
 
-	return string.format(
-		"%%#%s#%s%%#StatusLine# 󰉋 %s%s %%m%s %%=%s%s%%l:%%c %%p%%%% ",
-		mode_info.hl,
+return string.format(
+		"%%#%s#%s%%#StatusLine# 󰉋 %s%s %%m%s %%=%s%s%%l:%%c %%#%s# %%p%%%% ",
+		mode_info.hl, -- First use: for the mode name at the start
 		mode_info.name,
 		current_dir,
 		git,
 		search,
 		diags,
-		lsp
+		lsp,
+		mode_info.hl -- Second use: for the percentage background at the end
 	)
 end
 
