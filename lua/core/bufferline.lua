@@ -22,8 +22,10 @@ function _G.simple_bufferline()
 
 	for i, buf in ipairs(bufs) do
 		local is_active = buf.bufnr == cur_buf
+
 		-- Start Highlight Group
 		s = s .. (is_active and "%#TabLineSel#" or "%#TabLine#")
+
 		-- ADDED: Start Clickable Area
 		-- The syntax is %@Func_Name@ ... %X
 		-- We pass the bufnr as the argument to switch_buffer_click
@@ -41,13 +43,7 @@ function _G.simple_bufferline()
 		end
 	end
 
-	s = s .. "%#TabLineFill#%="
-
-	-- Add parent directory of the active buffer on the right side
-	local cur_name = a.nvim_buf_get_name(cur_buf)
-	local dir = (cur_name ~= "") and vim.fn.fnamemodify(cur_name, ":p:h:t") or vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-
-	s = s .. "%#TabLine# 󰉋 " .. dir .. " "
+	s = s .. "%#TabLineFill#%T"
 	return s
 end
 
