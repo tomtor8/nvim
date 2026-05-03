@@ -47,54 +47,44 @@ function _G.simple_bufferline()
 	return s
 end
 
+-- apply bufferline
 o.tabline = "%!v:lua.simple_bufferline()"
 o.showtabline = 2 -- set to 0 to disable
 
--- Add padding bewtween bufferline and buffer itself
-a.nvim_set_hl(0, "WinBarSpacer", { fg = "#636A72", bg = "#161922" })
-
--- -- Active window: Bright text/icon
--- a.nvim_set_hl(0, "WinBarActive", { fg = "#E6B450", bg = "none", bold = true }) 
--- -- Inactive window: Dimmed/Greyed out
--- a.nvim_set_hl(0, "WinBarInactive", { fg = "#565B66", bg = "none" })
--- -- The spacer/line color
--- a.nvim_set_hl(0, "WinBarSpacer", { fg = "#161922", bg = "none" })
+-- Active: Gold and Bold
+a.nvim_set_hl(0, "WinBar", { fg = "#BFBDB6", bg = "#161922", bold = true })
+-- Inactive: Muted Grey
+a.nvim_set_hl(0, "WinBarNC", { fg = "#565B66", bg = "#161922", italic = true })
 
 function _G.simple_winbar()
-    -- Get the ID of the window currently being rendered
-    local winid = vim.g.statusline_winid or 0
-    
-    -- Get the buffer ID for that specific window
-    local bufnr = vim.api.nvim_win_get_buf(winid)
-    local file_path = vim.api.nvim_buf_get_name(bufnr)
+	local winid = vim.g.statusline_winid or 0
+	local curwin = vim.api.nvim_get_current_win()
+	local bufnr = vim.api.nvim_win_get_buf(winid)
+	local file_path = vim.api.nvim_buf_get_name(bufnr)
 
-    if file_path == "" then
-        return "%#WinBarSpacer# [No Name] "
-    end
+	if file_path == "" then
+		return ""
+	end
 
-    -- 1. Manual Home-to-Tilde conversion
-    local home = os.getenv("HOME")
-    local display_path = file_path
-    if home and file_path:find(home, 1, true) == 1 then
-        display_path = "~" .. file_path:sub(#home + 1)
-    end
+	local is_active = (winid == curwin)
 
-    -- 2. Shorten the path
-    local shortened = vim.fn.pathshorten(display_path)
+	-- We use the standard atoms. Neovim handles the 'switching' logic.
+	local hl = is_active and "%#WinBar#" or "%#WinBarNC#"
+	local icon = is_active and "󰈈 " or "󰈉 "
 
-    -- 3. Push to the right
-    return string.format("%%#WinBarSpacer#%%=󰉋 %s ", shortened)
+	-- Path logic
+	local home = os.getenv("HOME")
+	local display_path = file_path
+	if home and file_path:find(home, 1, true) == 1 then
+		display_path = "~" .. file_path:sub(#home + 1)
+	end
+	-- if you want shortened path uncomment next line
+	-- and modify the return string.format()
+	-- local shortened = vim.fn.pathshorten(display_path)
+
+	-- Return: Push to right, then apply highlight, icon, and path
+	return string.format("%%=%s%s %s ", hl, icon, display_path)
 end
 
+-- apply winbar
 vim.opt.winbar = "%!v:lua.simple_winbar()"
-
--- Applying it with %! ensures it re-evaluates for every window
-vim.opt.winbar = "%!v:lua.simple_winbar()"
-
--- Using %! ensures the function is evaluated for each window specifically
-o.winbar = "%!v:lua.simple_winbar()"
-
-o.winbar = "%!v:lua.simple_winbar()"
--- o.winbar = "%#WinBarSpacer#────────────────"
--- Shows the directory followed by the line
--- o.winbar = "%#WinBarSpacer# 󰉋 %{v:lua.vim.fn.fnamemodify(v:lua.vim.api.nvim_buf_get_name(0), ':p:h:t')} ──"
