@@ -51,25 +51,48 @@ o.tabline = "%!v:lua.simple_bufferline()"
 o.showtabline = 2 -- set to 0 to disable
 
 -- Add padding bewtween bufferline and buffer itself
-a.nvim_set_hl(0, "WinBarSpacer", { fg = "#BFBDB6", bg = "#161922" })
+a.nvim_set_hl(0, "WinBarSpacer", { fg = "#636A72", bg = "#161922" })
+
+-- -- Active window: Bright text/icon
+-- a.nvim_set_hl(0, "WinBarActive", { fg = "#E6B450", bg = "none", bold = true }) 
+-- -- Inactive window: Dimmed/Greyed out
+-- a.nvim_set_hl(0, "WinBarInactive", { fg = "#565B66", bg = "none" })
+-- -- The spacer/line color
+-- a.nvim_set_hl(0, "WinBarSpacer", { fg = "#161922", bg = "none" })
 
 function _G.simple_winbar()
-	local file_path = vim.api.nvim_buf_get_name(0)
-	if file_path == "" then
-		return "%#WinBarSpacer# ──"
-	end
+    -- Get the ID of the window currently being rendered
+    local winid = vim.g.statusline_winid or 0
+    
+    -- Get the buffer ID for that specific window
+    local bufnr = vim.api.nvim_win_get_buf(winid)
+    local file_path = vim.api.nvim_buf_get_name(bufnr)
 
-	-- Get the parent folder and the filename
-	local parent = vim.fn.fnamemodify(file_path, ":p:h:t")
-	local file = vim.fn.fnamemodify(file_path, ":t")
+    if file_path == "" then
+        return "%#WinBarSpacer# [No Name] "
+    end
 
-	-- Display: Folder > File ───
-	return string.format(
-		"%%#WinBarSpacer#  󰉋 %s › 󰈔 %s  ────────────────",
-		parent,
-		file
-	)
+    -- 1. Manual Home-to-Tilde conversion
+    local home = os.getenv("HOME")
+    local display_path = file_path
+    if home and file_path:find(home, 1, true) == 1 then
+        display_path = "~" .. file_path:sub(#home + 1)
+    end
+
+    -- 2. Shorten the path
+    local shortened = vim.fn.pathshorten(display_path)
+
+    -- 3. Push to the right
+    return string.format("%%#WinBarSpacer#%%=󰉋 %s ", shortened)
 end
+
+vim.opt.winbar = "%!v:lua.simple_winbar()"
+
+-- Applying it with %! ensures it re-evaluates for every window
+vim.opt.winbar = "%!v:lua.simple_winbar()"
+
+-- Using %! ensures the function is evaluated for each window specifically
+o.winbar = "%!v:lua.simple_winbar()"
 
 o.winbar = "%!v:lua.simple_winbar()"
 -- o.winbar = "%#WinBarSpacer#────────────────"
