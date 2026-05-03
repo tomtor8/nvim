@@ -10,10 +10,10 @@ vim.diagnostic.config({
   },
   signs = {
     text = {
-      [sev.ERROR] = 'E',
-      [sev.WARN]  = 'W',
-      [sev.INFO]  = 'I',
-      [sev.HINT]  = 'H',
+      [sev.ERROR] = " ",
+      [sev.WARN]  = " ",
+      [sev.INFO]  = " ",
+      [sev.HINT]  = "󰌵 ",
     },
   },
 })
