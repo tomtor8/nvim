@@ -46,22 +46,6 @@ local function get_lsp_status()
 	return string.format(" %%#StatusLspName#%s%%#StatusLine# ", display)
 end
 
--- New: Terminal Exit Code {{{1
-local function get_terminal_status()
-	-- Check if we are in a terminal buffer and it has exited
-	if vim.bo.buftype ~= "terminal" then
-		return ""
-	end
-
-	-- Neovim sets b:terminal_job_status on exit
-	local status = vim.b.terminal_job_status
-	if status then
-		local hl = status == 0 and "%#StatusNormal#" or "%#StatusError#"
-		return string.format(" %s[Exit: %d]%%#StatusLine# ", hl, status)
-	end
-	return " %#StatusGit#[Running]%#StatusLine# "
-end
-
 -- Main statusline function {{{1
 function _G.simple_statusline()
 	local mode_info = mode_map[vim.api.nvim_get_mode().mode] or mode_map["n"]
@@ -81,16 +65,15 @@ function _G.simple_statusline()
 
 	local git = get_git_status()
 	local lsp = get_lsp_status() -- Now includes names and progress
-	local term = get_terminal_status()
+	-- local term = get_terminal_status()
 
 	return string.format(
-		"%%#%s#%s%%#StatusLine# 󰉋 %s%s %%m%s%s %%=%s%s%%l:%%c %%p%%%% ",
+		"%%#%s#%s%%#StatusLine# 󰉋 %s%s %%m%s %%=%s%s%%l:%%c %%p%%%% ",
 		mode_info.hl,
 		mode_info.name,
 		current_dir,
 		git,
 		search,
-		term,
 		diags,
 		lsp
 	)
