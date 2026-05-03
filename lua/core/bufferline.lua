@@ -55,7 +55,27 @@ o.tabline = "%!v:lua.simple_bufferline()"
 o.showtabline = 2 -- set to 0 to disable
 
 -- Add padding bewtween bufferline and buffer itself
-a.nvim_set_hl(0, "WinBarSpacer", { fg = "#161922", bg = "none" })
+a.nvim_set_hl(0, "WinBarSpacer", { fg = "#BFBDB6", bg = "#161922" })
+
+function _G.simple_winbar()
+	local file_path = vim.api.nvim_buf_get_name(0)
+	if file_path == "" then
+		return "%#WinBarSpacer# ──"
+	end
+
+	-- Get the parent folder and the filename
+	local parent = vim.fn.fnamemodify(file_path, ":p:h:t")
+	local file = vim.fn.fnamemodify(file_path, ":t")
+
+	-- Display: Folder > File ───
+	return string.format(
+		"%%#WinBarSpacer#  󰉋 %s › 󰈔 %s  ────────────────",
+		parent,
+		file
+	)
+end
+
+o.winbar = "%!v:lua.simple_winbar()"
 -- o.winbar = "%#WinBarSpacer#────────────────"
 -- Shows the directory followed by the line
-o.winbar = "%#WinBarSpacer# 󰉋 %{v:lua.vim.fn.fnamemodify(v:lua.vim.api.nvim_buf_get_name(0), ':p:h:t')} ──"
+-- o.winbar = "%#WinBarSpacer# 󰉋 %{v:lua.vim.fn.fnamemodify(v:lua.vim.api.nvim_buf_get_name(0), ':p:h:t')} ──"
