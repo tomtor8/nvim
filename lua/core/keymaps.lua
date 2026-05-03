@@ -228,7 +228,7 @@ k.set("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close buffer", silent = tr
 -- Search & Substitute {{{2
 
 -- Find files with :Pick files
-k.set("n", "<leader>ff", "<cmd>Pick files<CR>", { desc = "Pick files" })
+k.set("n", "<leader>ff", "<cmd>Pick files in cwd<CR>", { desc = "Pick files" })
 k.set("n", "<leader>fo", "<cmd>Pick old files<CR>", { desc = "Pick old files" })
 k.set("n", "<leader>fh", "<cmd>Pick explorer cwd='/home/tom'<CR>", { desc = "Explore Home" })
 k.set("n", "<leader>fn", "<cmd>Pick explorer cwd='/home/tom/Documents/notes'<CR>", { desc = "Explore Notes" })
