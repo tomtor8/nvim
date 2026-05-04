@@ -62,7 +62,8 @@ vim.pack.add({
 	"https://github.com/nvim-mini/mini.snippets",
 	"https://github.com/nvim-mini/mini.files",
 	"https://github.com/nvim-mini/mini.extra",
-    'https://github.com/antonk52/filepaths_ls.nvim',
+    "https://github.com/antonk52/filepaths_ls.nvim",
+    "https://github.com/lukas-reineke/indent-blankline.nvim",
 })
 -- NOTE install tree-sitter-cli using pacman first!
 -- then install language support via :TSManager<CR>
@@ -79,6 +80,7 @@ require('mini.files').setup({
 })
 
 require("mini.pairs").setup()
+require("ibl").setup()
 
 require("mini.surround").setup()
 

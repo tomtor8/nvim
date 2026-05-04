@@ -5,9 +5,9 @@ local g = vim.g
 -- o.autocomplete = false        -- Native auto-popup completion
 -- o.autocompletedelay = 500    -- Milliseconds before popup appears
 o.completeopt = "menuone,noselect" -- 0.12 recommends 'popup' for docs
-o.undofile = true            -- Persistent undo
-o.updatetime = 250           -- Speed of diagnostic/completion updates
-o.timeoutlen = 400           -- Mapping delay
+o.undofile = true -- Persistent undo
+o.updatetime = 250 -- Speed of diagnostic/completion updates
+o.timeoutlen = 400 -- Mapping delay
 o.mouse = "a"
 o.hidden = true
 o.confirm = true
@@ -19,8 +19,8 @@ o.number = true
 o.relativenumber = false
 o.cursorline = true
 o.signcolumn = "number"
-o.showmode = false           -- Statusline usually handles this
-o.laststatus = 3             -- Global statusline
+o.showmode = false -- Statusline usually handles this
+o.laststatus = 3 -- Global statusline
 
 -- Scrolling & Splits
 o.scrolloff = 8
@@ -31,9 +31,13 @@ o.splitright = true
 -- Whitespace Rendering
 o.list = true
 o.listchars = {
-    tab = "▸ ",
-    trail = "·",
-    leadmultispace = "   ",
+	-- tab = "▸ ",
+	trail = "·",
+	-- leadmultispace = "   ",
+	extends = "»", -- Text continues right
+	precedes = "«", -- Text continues left
+	-- create non-breaking space Ctrl+v then `u` then `00a0`
+	nbsp = "␣", -- Non-breaking space
 }
 o.fillchars:append({ vert = "│", eob = " ", fold = " " })
 o.wrap = false
@@ -60,8 +64,16 @@ o.wildignorecase = true
 -- Dictionaries & Completion Sources
 o.dictionary:append("~/Code/dotfiles/dics/spanish.txt")
 o.wildignore:append({
-    "*/.git/*", "*/node_modules/*", "*/.venv/*", "*/build/*", "*/dist/*",
-    "*.pyc", "__pycache__", "*.DS_Store", "*.swp", "*/.local/share/*"
+	"*/.git/*",
+	"*/node_modules/*",
+	"*/.venv/*",
+	"*/build/*",
+	"*/dist/*",
+	"*.pyc",
+	"__pycache__",
+	"*.DS_Store",
+	"*.swp",
+	"*/.local/share/*",
 })
 
 -- 4. INDENTATION & TABS {{{1
@@ -79,15 +91,15 @@ g.netrw_winsize = 33
 
 -- Auto-cleanup empty ghost buffers after opening netrw
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "netrw",
-  callback = function()
-    local prev_buf = vim.fn.bufnr("#")
-    if vim.api.nvim_buf_is_valid(prev_buf) then
-      local name = vim.api.nvim_buf_get_name(prev_buf)
-      local buftype = vim.api.nvim_get_option_value("buftype", { buf = prev_buf })
-      if name == "" and buftype == "" then
-        vim.api.nvim_buf_delete(prev_buf, { force = true })
-      end
-    end
-  end,
+	pattern = "netrw",
+	callback = function()
+		local prev_buf = vim.fn.bufnr("#")
+		if vim.api.nvim_buf_is_valid(prev_buf) then
+			local name = vim.api.nvim_buf_get_name(prev_buf)
+			local buftype = vim.api.nvim_get_option_value("buftype", { buf = prev_buf })
+			if name == "" and buftype == "" then
+				vim.api.nvim_buf_delete(prev_buf, { force = true })
+			end
+		end
+	end,
 })

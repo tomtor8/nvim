@@ -4,6 +4,10 @@
       "rev": "c5ebc0aa1cb0c7dc4509be834ca54f2c8364c11b",
       "src": "https://github.com/antonk52/filepaths_ls.nvim"
     },
+    "indent-blankline.nvim": {
+      "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
+      "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
+    },
     "mini.clue": {
       "rev": "43bd6cf1c3ccdea46d403c32dbc4629fa6afa09d",
       "src": "https://github.com/nvim-mini/mini.clue"
