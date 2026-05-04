@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "filepaths_ls.nvim": {
+      "rev": "c5ebc0aa1cb0c7dc4509be834ca54f2c8364c11b",
+      "src": "https://github.com/antonk52/filepaths_ls.nvim"
+    },
     "mini.clue": {
       "rev": "43bd6cf1c3ccdea46d403c32dbc4629fa6afa09d",
       "src": "https://github.com/nvim-mini/mini.clue"

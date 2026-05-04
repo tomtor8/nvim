@@ -182,3 +182,7 @@ vim.lsp.config("jsonls", {
 
 -- 2. Enable it globally (Neovim will automatically start it for CSS files)
 vim.lsp.enable("jsonls")
+
+-- File completion setup {{{1
+
+vim.lsp.enable('filepaths_ls')
