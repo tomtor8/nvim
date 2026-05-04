@@ -80,7 +80,14 @@ require("mini.files").setup({
 })
 
 require("mini.pairs").setup()
-require("ibl").setup()
+require("ibl").setup({
+    exclude = {
+        filetypes = {
+            "markdown",
+            "text"
+        }
+    }
+})
 
 require("mini.surround").setup()
 
