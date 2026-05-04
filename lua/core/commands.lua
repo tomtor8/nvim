@@ -86,3 +86,17 @@ a.nvim_create_user_command("Luatemp", function()
 	vim.cmd("0r /home/tom/Templates/lua/basic.lua")
 	vim.cmd("normal! G")
 end, { desc = "Import basic Lua template at the start of the buffer" })
+
+-- Close all buffers except active {{{1
+vim.cmd.cnoreabbrev("Bo", "BufOnly")
+vim.api.nvim_create_user_command("BufOnly", function(args)
+  local confirm = vim.o.confirm
+  vim.o.confirm = true
+  local current_buf = vim.api.nvim_get_current_buf()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if buf ~= current_buf then
+      pcall(vim.api.nvim_buf_delete, buf, { force = args.bang })
+    end
+  end
+  vim.o.confirm = confirm
+end, { bang = true })
