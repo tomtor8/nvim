@@ -17,7 +17,13 @@ function CustomFoldText()
     local indent = string.rep("  ", level - 1)
     local icon = "󰉈 " .. level
     local line_count = vim.v.foldend - vim.v.foldstart + 1
-    return indent .. icon .. " │ " .. cleaned_line .. " (" .. line_count .. " lines)"
+    return indent
+        .. icon
+        .. " │ "
+        .. cleaned_line
+        .. " ("
+        .. line_count
+        .. " lines)"
 end
 
 vim.opt.foldtext = "v:lua.CustomFoldText()"
@@ -81,12 +87,30 @@ require("mini.files").setup({
 
 require("mini.pairs").setup()
 require("ibl").setup({
+    scope = {
+        enabled = true,
+        show_start = true,
+        show_end = true,
+        highlight = { "Function", "Label" }, -- Uses existing theme colors
+        include = {
+            node_type = {
+                lua = { "return_statement", "table_constructor", "function_call" },
+                python = {
+                    "function_definition",
+                    "class_definition",
+                    "if_statement",
+                    "for_statement",
+                    "while_statement",
+                },
+            },
+        },
+    },
     exclude = {
         filetypes = {
             "markdown",
-            "text"
-        }
-    }
+            "text",
+        },
+    },
 })
 
 require("mini.surround").setup()
