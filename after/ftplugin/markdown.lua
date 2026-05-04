@@ -14,7 +14,7 @@ o.linebreak = true
 o.cpoptions:append("n")
 o.conceallevel = 3 -- hide some markdown characters
 ---- concealcursor = "n" does not expand the hidden parts
--- o.concealcursor = "n"
+o.concealcursor = "n"
 
 -- Navigate by visual lines instead of logical lines
 k.set("n", "j", "gj", { silent = true, desc = "Move down visually" })
@@ -23,6 +23,17 @@ k.set("n", "k", "gk", { silent = true, desc = "Move up visually" })
 -- Also apply to visual mode so selections follow the wrap
 k.set("v", "j", "gj", { silent = true })
 k.set("v", "k", "gk", { silent = true })
+
+-- Toggle conceallevel between 0 and 3
+vim.keymap.set('n', '<leader>tc', function()
+  local current = vim.opt_local.conceallevel:get()
+  if current == 0 then
+    vim.opt_local.conceallevel = 3
+  else
+    vim.opt_local.conceallevel = 0
+  end
+end, { buffer = true, desc = "Toggle Conceal" })
+
 
 -- use `:Inspect` command to get the highlight names
 -- of the items under cursor in the buffer

@@ -262,6 +262,8 @@ k.set(
 -- System clipboard {{{2
 k.set("n", "YY", "<cmd>%y+<CR>", { desc = "Yank entire document to clipboard" })
 
+-- Toggle conceallevel in markdown {{{1
+
 -- Visual mode {{{1
 -- Move text up and down in Visual Mode {{{2
 k.set("v", "J", "<cmd>m '>+1<CR>gv=gv", { desc = "Move block down" })
