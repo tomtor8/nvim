@@ -240,7 +240,7 @@ k.set("n", "<leader>fr", "<cmd>Pick grep_live<CR>", { desc = "Grep files with Pi
 
 -- Substitute in very magic mode
 k.set("n", "<C-s>", [[:%s/\v]], { desc = "Substitute in very magic mode" })
-k.set("v", "<C-s>", [[:%s/\v]], { desc = "Substitute in very magic mode" })
+k.set("v", "<C-s>", [[:s/\v]], { desc = "Substitute in very magic mode" })
 
 -- Keep search results centered
 k.set("n", "n", "nzzzv", { desc = "Next search match (centered)" })
