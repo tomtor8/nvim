@@ -1,6 +1,9 @@
 -- Helper to get current Git branch {{{1
 local function get_git_status()
-    local branch = vim.b.gitsigns_head or vim.fn.system("git branch --show-current 2> /dev/null"):gsub("\n", "")
+    local branch = vim.b.gitsigns_head
+        or vim.fn
+            .system("git branch --show-current 2> /dev/null")
+            :gsub("\n", "")
 
     if branch == "" then
         return ""
@@ -55,9 +58,16 @@ function _G.simple_statusline()
     local mode_info = mode_map[vim.api.nvim_get_mode().mode] or mode_map["n"]
     local current_dir = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
 
-    local s_info = vim.fn.searchcount({ maxcount = 999, timeout = 500 })
+    local ok, s_info =
+        pcall(vim.fn.searchcount, { maxcount = 999, timeout = 500 })
     local search = ""
-    if s_info and s_info.total and s_info.total > 0 and vim.v.hlsearch ~= 0 then
+    if
+        ok
+        and s_info
+        and s_info.total
+        and s_info.total > 0
+        and vim.v.hlsearch ~= 0
+    then
         search = string.format(" [%d/%d] ", s_info.current, s_info.total)
     end
 
