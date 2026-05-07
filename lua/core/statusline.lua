@@ -1,15 +1,34 @@
 -- Helper to get current Git branch {{{1
 local function get_git_status()
     local branch = vim.b.gitsigns_head
-        or vim.fn
-            .system("git branch --show-current 2> /dev/null")
-            :gsub("\n", "")
+    if branch then
+        return string.format(" %%#StatusGit# %s%%#StatusLine# ", branch)
+    end
 
-    if branch == "" then
+    -- findfile can return a string or a list depending on flags
+    local head_path =
+        vim.fn.findfile(".git/HEAD", vim.fn.expand("%:p:h") .. ";")
+
+    -- Ensure it's a non-empty string
+    if type(head_path) ~= "string" or head_path == "" then
         return ""
     end
 
-    return string.format(" %%#StatusGit# %s%%#StatusLine# ", branch)
+    local f = io.open(head_path, "r")
+    if not f then
+        return ""
+    end
+
+    local content = f:read("*l")
+    f:close()
+
+    if content then
+        local name = content:match("ref: refs/heads/(.+)")
+        if name then
+            return string.format(" %%#StatusGit# %s%%#StatusLine# ", name)
+        end
+    end
+    return ""
 end
 
 -- Map of mode codes to display names and highlights {{{1
