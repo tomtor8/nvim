@@ -56,6 +56,44 @@ end, {
     desc = "Remove bold markdown formatting from the file or selection",
 })
 
+-- Create a buffer-local user command :RemoveItalic
+vim.api.nvim_buf_create_user_command(0, "RemoveItalic", function(opts)
+  -- Save the current cursor position to prevent it from jumping
+  local save_cursor = vim.fn.getpos(".")
+  local range = "%"
+  if opts.range > 0 then
+    range = string.format("%d,%d", opts.line1, opts.line2)
+  end
+  -- Group 1: \([_*]\) captures either an underscore or a literal asterisk
+  -- Group 2: \([^*_]\{-}\) captures the text inside non-greedily
+  -- Backreference: \1 ensures the closing character matches the opening one
+  -- Replacement: \2 restores only the inner text
+  vim.cmd(string.format([[%ss/\([_*]\)\([^*_]\{-}\)\1/\2/ge]], range))
+  -- Restore the cursor position
+  vim.fn.setpos(".", save_cursor)
+end, {
+  range = true,
+  desc = "Remove italic markdown formatting (_ or *) from the file or selection",
+})
+
+-- Remove Inline Code user command
+vim.api.nvim_buf_create_user_command(0, "RemoveInCode", function(opts)
+    -- Save the current cursor position to prevent it from jumping
+    local save_cursor = vim.fn.getpos(".")
+    local range = "%"
+    if opts.range > 0 then
+        range = string.format("%d,%d", opts.line1, opts.line2)
+    end
+    -- Run the substitution string safely using Lua's raw string syntax
+    -- the `{-}` means non-greedy search, search any char except `
+    vim.cmd(string.format([[%ss/`\([^`]\{-}\)`/\1/ge]], range))
+    -- Restore the cursor position
+    vim.fn.setpos(".", save_cursor)
+end, {
+    range = true, -- Allows the command to accept a range (e.g., visual selection)
+    desc = "Remove inline code markdown formatting from the file or selection",
+})
+
 -- Colors & Highlighting {{{1
 
 -- use `:Inspect` command to get the highlight names
