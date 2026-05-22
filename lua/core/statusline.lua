@@ -52,6 +52,7 @@ local lsp_icons = {
     fish_lsp = "󰈺",
     bash_ls = "󱆃",
     rust_analyzer = "󱘗",
+    tombi = "",
 }
 
 local function get_lsp_status()
