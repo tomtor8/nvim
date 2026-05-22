@@ -52,6 +52,7 @@ local formatters = {
     javascript = "prettier --write %",
     markdown = "prettier --write %",
     json = "prettier --write %",
+    toml = "tombi format %",
     -- Use a function for LSP-based formatting
     rust = function()
         vim.lsp.buf.format({ async = false })
