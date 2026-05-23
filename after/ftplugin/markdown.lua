@@ -181,7 +181,7 @@ a.nvim_set_hl(0, "@markup.raw.markdown_inline", { fg = markup, bg = "#1c2433" })
 a.nvim_set_hl(0, "@markup.raw.block.markdown", { fg = "#b3b1ad", bg = "none" })
 
 -- 4. Blockquotes & Lists
-a.nvim_set_hl(0, "@markup.quote", { fg = comment, italic = true })
+-- a.nvim_set_hl(0, "@markup.quote", { fg = "#e6e1cf" })
 a.nvim_set_hl(0, "@markup.list.markdown", { fg = green })
 
 -- 5. Tables
