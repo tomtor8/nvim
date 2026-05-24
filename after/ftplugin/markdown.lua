@@ -90,52 +90,48 @@ for command_name, config in pairs(markdown_commands) do
     end, { range = true, desc = config.desc })
 end
 
--- -- Create a buffer-local user command :RemoveBold
--- -- The '0' argument targets the current buffer only
--- vim.api.nvim_buf_create_user_command(0, "RemoveBold", function(opts)
---     -- Save the current cursor position to prevent it from jumping
---     local save_cursor = vim.fn.getpos(".")
---     -- Determine the range (defaults to whole file '%' if no range is given)
---     local range = opts.range > 0 and string.format("%d,%d", opts.line1, opts.line2) or "%"
---     vim.cmd(string.format([[%ss/\*\*\(.\{-}\)\*\*/\1/ge]], range))
---     -- Restore the cursor position
---     safe_restore_cursor(save_cursor)
--- end, {
---     range = true, -- Allows the command to accept a range (e.g., visual selection)
---     desc = "Remove bold markdown formatting from the file or selection",
--- })
---
--- -- Create a buffer-local user command :RemoveItalic
--- vim.api.nvim_buf_create_user_command(0, "RemoveItalic", function(opts)
---   -- Save the current cursor position to prevent it from jumping
---   local save_cursor = vim.fn.getpos(".")
---   local range = opts.range > 0 and string.format("%d,%d", opts.line1, opts.line2) or "%"
---   -- Group 1: \([_*]\) captures either an underscore or a literal asterisk
---   -- Group 2: \([^*_]\{-}\) captures the text inside non-greedily
---   -- Backreference: \1 ensures the closing character matches the opening one
---   -- Replacement: \2 restores only the inner text
---   vim.cmd(string.format([[%ss/\([_*]\)\([^*_]\{-}\)\1/\2/ge]], range))
---   -- Restore the cursor position
---   safe_restore_cursor(save_cursor)
--- end, {
---   range = true,
---   desc = "Remove italic markdown formatting (_ or *) from the file or selection",
--- })
---
--- -- Remove Inline Code user command
--- vim.api.nvim_buf_create_user_command(0, "RemoveInCode", function(opts)
---     -- Save the current cursor position to prevent it from jumping
---     local save_cursor = vim.fn.getpos(".")
---     local range = opts.range > 0 and string.format("%d,%d", opts.line1, opts.line2) or "%"
---     -- Run the substitution string safely using Lua's raw string syntax
---     -- the `{-}` means non-greedy search, search any char except `
---     vim.cmd(string.format([[%ss/`\([^`]\{-}\)`/\1/ge]], range))
---     -- Restore the cursor position
---     safe_restore_cursor(save_cursor)
--- end, {
---     range = true, -- Allows the command to accept a range (e.g., visual selection)
---     desc = "Remove inline code markdown formatting from the file or selection",
--- })
+-- Create blockquote from alternating lines {{{2
+-- takes integer / number of repetition argument
+vim.api.nvim_create_user_command("FmToQuote", function(opts)
+    -- Default to 1 repetition if no argument is provided
+    local count = 1
+    local appendix = ""
+
+    -- Check if an argument was passed and try to convert it to a number
+    if opts.args ~= "" then
+        local parsed_count = tonumber(opts.args)
+        if parsed_count then
+            count = parsed_count
+        else
+            vim.notify("Argument must be an integer", vim.log.levels.ERROR)
+            return
+        end
+    end
+
+    if count > 1 then
+        appendix = "i><Esc>j"
+    end
+
+    -- Define your complex set of motions here
+    -- 'A;<Esc>j' appends a semicolon, exits insert mode, and moves down one line
+    -- we use nvim_replace_termcodes so special keys like <Esc> are parsed correctly
+    local motions = vim.api.nvim_replace_termcodes(
+        "I> <Esc>A  <Esc>jddI> <Esc>j" .. appendix,
+        true,
+        false,
+        true
+    )
+
+    -- Run the motions 'count' times
+    for _ = 1, count do
+        -- Use nvim_feedkeys with the 'n' flag to simulate 'normal!' (ignores mappings)
+        -- and the 'x' flag to execute synchronously before looping again
+        vim.api.nvim_feedkeys(motions, "nx", false)
+    end
+end, {
+    nargs = "?", -- Accepts 0 or 1 argument
+    desc = "Format lines with alternating empty lines to blockquote.",
+})
 
 -- Colors & Highlighting {{{1
 
