@@ -141,8 +141,18 @@ end, { bang = true })
 local labeled_macros = {
     { label = "Wrap word in quotes", macro = 'viw"zc""<Esc>P' },
     { label = "Append trailing comma", macro = "A,<Esc>j" },
-    { label = "QuoteBlock from line blank line", macro = "I> _<Esc>A_  <Esc>jddI> <Esc>jI><Esc>j" },
-    { label = "QuoteBlock from line line line", macro = "I> _<Esc>A_  <Esc>jI> <Esc>o<Esc>j" },
+    {
+        label = "QuoteBlock from line blank line",
+        macro = "I> _<Esc>A_  <Esc>jddI> <Esc>jI><Esc>j",
+    },
+    {
+        label = "QuoteBlock from line line line",
+        macro = "I> _<Esc>A_  <Esc>jI> <Esc>o<Esc>j",
+    },
+    {
+        label = "Definition List from line line line",
+        macro = "jI: <Esc>o<Esc>j",
+    },
 }
 
 -- Define the command with nargs = '?' to allow 0 or 1 argument
@@ -225,3 +235,83 @@ vim.keymap.set(
     ":MacroSelectRange<CR>",
     { desc = "Run macro on selected lines" }
 )
+
+-- Load Macros to a selected register {{{1
+-- optional argument is the register, can be any alphabet key
+-- usage `:MacroLoad` loads the choice to @q - default
+-- `:MacroLoad b` loads the choice to @b and so on...
+local labeled_macros_to_load = {
+    { label = "Wrap word in quotes", macro = 'viw"zc""<Esc>P' },
+    { label = "Append trailing comma", macro = "A,<Esc>" },
+    { label = "Bold Word", macro = 'viW"zc**<Esc>pa**<Esc>' },
+    { label = "Italic Word", macro = 'viW"zc__<Esc>P' },
+    { label = "Inline Code Word", macro = 'viW"zc``<Esc>P' },
+    { label = "Definition List line line line", macro = "jI: <Esc>o<Esc>j" },
+    {
+        label = "BlockQuote line line line",
+        macro = "I> _<Esc>A_  <Esc>jI> <Esc>o<Esc>j",
+    },
+    {
+        label = "BlockQuote line blank line",
+        macro = "I> _<Esc>A_  <Esc>jddI> <Esc>jj",
+    },
+}
+
+vim.api.nvim_create_user_command("MacroLoad", function(opts)
+    local reg = "q"
+    if opts.args and opts.args ~= "" then
+        reg = string.sub(opts.args, 1, 1):lower()
+    end
+
+    if not string.match(reg, "^[a-z]$") then
+        print("Error: Target must be a valid register between a and z.")
+        return
+    end
+
+    vim.ui.select(labeled_macros_to_load, {
+        prompt = string.format("Load macro into register '@%s':", reg),
+        format_item = function(item)
+            return item.label
+        end,
+    }, function(choice)
+        if choice then
+            -- CONVERSION STEP: Translate "<Esc>" strings into true internal keystroke codes
+            local clean_macro =
+                vim.api.nvim_replace_termcodes(choice.macro, true, false, true)
+
+            -- Load the translated binary string into the register
+            vim.fn.setreg(reg, clean_macro)
+            print(string.format("Loaded '%s' into @%s", choice.label, reg))
+        end
+    end)
+end, { nargs = "?" })
+
+-- Remove Blank Lines with optional range {{{1
+-- default is the entire file
+-- uses global command `:<range>g/^$/d`
+vim.api.nvim_create_user_command("RemoveBlankLines", function(opts)
+    local original_cursor = vim.api.nvim_win_get_cursor(0)
+
+    local start_line = opts.line1
+    local end_line = opts.line2
+
+    local cmd = string.format([[%d,%dg/^$/d]], start_line, end_line)
+
+    -- Wrapped in an anonymous function to satisfy the LSP type analyzer
+    pcall(function()
+        vim.cmd(cmd)
+    end)
+
+    pcall(vim.api.nvim_win_set_cursor, 0, original_cursor)
+
+    print(
+        string.format(
+            "Cleared blank lines from range %d-%d",
+            start_line,
+            end_line
+        )
+    )
+end, {
+    range = "%",
+    desc = "Remove empty lines in a given range or the whole file",
+})
