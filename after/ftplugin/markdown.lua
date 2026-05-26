@@ -116,7 +116,7 @@ vim.api.nvim_create_user_command("FmToQuote", function(opts)
     -- 'A;<Esc>j' appends a semicolon, exits insert mode, and moves down one line
     -- we use nvim_replace_termcodes so special keys like <Esc> are parsed correctly
     local motions = vim.api.nvim_replace_termcodes(
-        "I> <Esc>A  <Esc>jddI> <Esc>j" .. appendix,
+        "I> _<Esc>A_  <Esc>jddI> <Esc>j" .. appendix,
         true,
         false,
         true
@@ -127,6 +127,11 @@ vim.api.nvim_create_user_command("FmToQuote", function(opts)
         -- Use nvim_feedkeys with the 'n' flag to simulate 'normal!' (ignores mappings)
         -- and the 'x' flag to execute synchronously before looping again
         vim.api.nvim_feedkeys(motions, "nx", false)
+    end
+
+    if count > 1 then
+        -- cleanup the last trailing >
+        vim.api.nvim_feedkeys("kx", "nx", false)
     end
 end, {
     nargs = "?", -- Accepts 0 or 1 argument
