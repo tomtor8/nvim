@@ -109,7 +109,7 @@ vim.api.nvim_create_user_command("FmToQuote", function(opts)
     end
 
     if count > 1 then
-        appendix = "i><Esc>j"
+        appendix = "I><Esc>j"
     end
 
     -- Define your complex set of motions here

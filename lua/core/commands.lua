@@ -2,13 +2,13 @@ local a = vim.api
 
 -- Helper function to safely restore cursor position without out-of-bounds jumps
 local function safe_restore_cursor(saved_pos)
-  vim.fn.setpos(".", saved_pos)
-  local current_line = vim.api.nvim_get_current_line()
-  -- saved_pos[3] is the column index
-  if saved_pos[3] > #current_line then
-    saved_pos[3] = math.max(1, #current_line)
     vim.fn.setpos(".", saved_pos)
-  end
+    local current_line = vim.api.nvim_get_current_line()
+    -- saved_pos[3] is the column index
+    if saved_pos[3] > #current_line then
+        saved_pos[3] = math.max(1, #current_line)
+        vim.fn.setpos(".", saved_pos)
+    end
 end
 
 -- Toggle relative numbers {{{1
@@ -86,7 +86,9 @@ end, { desc = "Format current buffer based on filetype" })
 vim.api.nvim_create_user_command("WhiteEnd", function(opts)
     -- Save the current cursor position to prevent it from jumping
     local save_cursor = vim.fn.getpos(".")
-    local range = opts.range > 0 and string.format("%d,%d", opts.line1, opts.line2) or "%"
+    local range = opts.range > 0
+            and string.format("%d,%d", opts.line1, opts.line2)
+        or "%"
     -- Run the substitution string safely using Lua's raw string syntax
     vim.cmd(string.format([[%ss/\s\+$//e]], range))
     -- Restore the cursor position
@@ -101,7 +103,9 @@ end, {
 vim.api.nvim_create_user_command("WhiteInter", function(opts)
     -- Save the current cursor position to prevent it from jumping
     local save_cursor = vim.fn.getpos(".")
-    local range = opts.range > 0 and string.format("%d,%d", opts.line1, opts.line2) or "%"
+    local range = opts.range > 0
+            and string.format("%d,%d", opts.line1, opts.line2)
+        or "%"
     vim.cmd(string.format([[%ss/\v\S\zs\s+\ze\S/ /ge]], range))
     -- Restore the cursor position
     safe_restore_cursor(save_cursor)
@@ -131,3 +135,93 @@ vim.api.nvim_create_user_command("BufOnly", function(args)
     end
     vim.o.confirm = confirm
 end, { bang = true })
+
+-- Macro Selector with optional Number argument {{{1
+-- You can repeat the macro N times
+local labeled_macros = {
+    { label = "Wrap word in quotes", macro = 'viw"zc""<Esc>P' },
+    { label = "Append trailing comma", macro = "A,<Esc>j" },
+    { label = "QuoteBlock from line blank line", macro = "I> _<Esc>A_  <Esc>jddI> <Esc>jI><Esc>j" },
+    { label = "QuoteBlock from line line line", macro = "I> _<Esc>A_  <Esc>jI> <Esc>o<Esc>j" },
+}
+
+-- Define the command with nargs = '?' to allow 0 or 1 argument
+vim.api.nvim_create_user_command("MacroSelect", function(opts)
+    -- Parse the argument as a number; default to 1 if empty or invalid
+    local count = tonumber(opts.args) or 1
+    -- vim.ui.select(items, opts, on_choice)
+    vim.ui.select(labeled_macros, {
+        prompt = string.format("Select a macro to run (%dx):", count),
+        format_item = function(item)
+            return item.label
+        end,
+    }, function(choice)
+        if choice then
+            -- Multiply the macro keystrokes by the count
+            local full_macro = string.rep(choice.macro, count)
+            local keys =
+                vim.api.nvim_replace_termcodes(full_macro, true, false, true)
+            vim.api.nvim_feedkeys(keys, "n", false)
+            print(string.format("Executed: %s (%dx)", choice.label, count))
+        end
+    end)
+end, { nargs = "?" }) -- '?' means 0 or 1 argument
+
+-- Macro Selector for a Range of Lines {{{1
+-- use it in the Visual mode
+-- or in Command mode e.g., `:15,20MacroSelectRange`
+-- or :.,+5MacroSelectRange -> Runs on the current line plus 5 lines
+-- or :%MacroSelectRange -> Runs on the entire file
+local labeled_macros_for_range = {
+    { label = "Append trailing comma", macro = "A,<Esc>" },
+}
+
+vim.api.nvim_create_user_command("MacroSelectRange", function(opts)
+    -- opts.line1 and opts.line2 are automatically populated by the range
+    local start_line = opts.line1
+    local end_line = opts.line2
+
+    vim.ui.select(labeled_macros_for_range, {
+        prompt = string.format(
+            "Run macro on lines %d-%d:",
+            start_line,
+            end_line
+        ),
+        format_item = function(item)
+            return item.label
+        end,
+    }, function(choice)
+        if choice then
+            -- Format the raw macro string into executable terminal codes
+            local macro_keys =
+                vim.api.nvim_replace_termcodes(choice.macro, true, false, true)
+
+            -- Loop through every line in the range
+            for line = start_line, end_line do
+                -- Move the cursor to the current line, column 0
+                vim.api.nvim_win_set_cursor(0, { line, 0 })
+
+                -- Run the macro keys on this specific line
+                vim.api.nvim_feedkeys(macro_keys, "nx", false)
+            end
+
+            print(
+                string.format(
+                    "Applied '%s' to lines %d through %d",
+                    choice.label,
+                    start_line,
+                    end_line
+                )
+            )
+        end
+    end)
+end, { range = true }) -- Enable range support
+
+-- Bind to x mode (Visual Mode)
+-- '<,>' automatically applies to the current visual selection
+vim.keymap.set(
+    "x",
+    "<leader>m",
+    ":MacroSelectRange<CR>",
+    { desc = "Run macro on selected lines" }
+)
