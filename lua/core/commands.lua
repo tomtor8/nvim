@@ -78,7 +78,7 @@ vim.api.nvim_create_user_command("Format", function()
         -- 4. Move the cursor back to where it was (optional but nice)
         vim.cmd("normal! G''")
     else
-        print("No formatter defined for " .. ft)
+        notify.notify_floating("No formatter defined for " .. ft, "Apply Format")
     end
 end, { desc = "Format current buffer based on filetype" })
 
@@ -173,7 +173,10 @@ vim.api.nvim_create_user_command("MacroSelect", function(opts)
             local keys =
                 vim.api.nvim_replace_termcodes(full_macro, true, false, true)
             vim.api.nvim_feedkeys(keys, "n", false)
-            print(string.format("Executed: %s (%dx)", choice.label, count))
+            notify.notify_floating(
+                string.format("Executed: %s (%dx)", choice.label, count),
+                "Execute Macro"
+            )
         end
     end)
 end, { nargs = "?" }) -- '?' means 0 or 1 argument
@@ -216,13 +219,14 @@ vim.api.nvim_create_user_command("MacroSelectRange", function(opts)
                 vim.api.nvim_feedkeys(macro_keys, "nx", false)
             end
 
-            print(
+            notify.notify_floating(
                 string.format(
                     "Applied '%s' to lines %d through %d",
                     choice.label,
                     start_line,
                     end_line
-                )
+                ),
+                "Execute Macro for Range"
             )
         end
     end)
@@ -265,7 +269,10 @@ vim.api.nvim_create_user_command("MacroLoad", function(opts)
     end
 
     if not string.match(reg, "^[a-z]$") then
-        notify.notify_floating("Error: Target must be a valid register between a and z.", "Error")
+        notify.notify_floating(
+            "Error: Target must be a valid register between a and z.",
+            "Error"
+        )
         return
     end
 
@@ -282,7 +289,10 @@ vim.api.nvim_create_user_command("MacroLoad", function(opts)
 
             -- Load the translated binary string into the register
             vim.fn.setreg(reg, clean_macro)
-            notify.notify_floating(string.format("Loaded '%s' into @%s", choice.label, reg), "Load Macro")
+            notify.notify_floating(
+                string.format("Loaded '%s' into @%s", choice.label, reg),
+                "Load Macro"
+            )
         end
     end)
 end, { nargs = "?" })
@@ -305,7 +315,8 @@ vim.api.nvim_create_user_command("RemoveBlankLines", function(opts)
             "Cleared blank lines from range %d-%d",
             start_line,
             end_line
-        ), "Remove Blank Lines"
+        ),
+        "Remove Blank Lines"
     )
 end, {
     range = "%",
