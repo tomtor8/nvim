@@ -1,4 +1,5 @@
 local a = vim.api
+local notify = require("user.notify-floating")
 
 -- Helper function to safely restore cursor position without out-of-bounds jumps
 local function safe_restore_cursor(saved_pos)
@@ -264,7 +265,7 @@ vim.api.nvim_create_user_command("MacroLoad", function(opts)
     end
 
     if not string.match(reg, "^[a-z]$") then
-        print("Error: Target must be a valid register between a and z.")
+        notify.notify_floating("Error: Target must be a valid register between a and z.", "Error")
         return
     end
 
@@ -281,7 +282,7 @@ vim.api.nvim_create_user_command("MacroLoad", function(opts)
 
             -- Load the translated binary string into the register
             vim.fn.setreg(reg, clean_macro)
-            print(string.format("Loaded '%s' into @%s", choice.label, reg))
+            notify.notify_floating(string.format("Loaded '%s' into @%s", choice.label, reg), "Load Macro")
         end
     end)
 end, { nargs = "?" })
@@ -290,11 +291,8 @@ end, { nargs = "?" })
 -- default is the entire file
 -- uses global command `:<range>g/^$/d`
 vim.api.nvim_create_user_command("RemoveBlankLines", function(opts)
-    local original_cursor = vim.api.nvim_win_get_cursor(0)
-
     local start_line = opts.line1
     local end_line = opts.line2
-
     local cmd = string.format([[%d,%dg/^$/d]], start_line, end_line)
 
     -- Wrapped in an anonymous function to satisfy the LSP type analyzer
@@ -302,14 +300,12 @@ vim.api.nvim_create_user_command("RemoveBlankLines", function(opts)
         vim.cmd(cmd)
     end)
 
-    pcall(vim.api.nvim_win_set_cursor, 0, original_cursor)
-
-    print(
+    notify.notify_floating(
         string.format(
             "Cleared blank lines from range %d-%d",
             start_line,
             end_line
-        )
+        ), "Remove Blank Lines"
     )
 end, {
     range = "%",
