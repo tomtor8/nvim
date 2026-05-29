@@ -154,6 +154,10 @@ local labeled_macros = {
         label = "Definition List from line line line",
         macro = "jI: <Esc>o<Esc>j",
     },
+    {
+        label = "Definition List from line blank line",
+        macro = "jddI: <Esc>jj",
+    },
 }
 
 -- Define the command with nargs = '?' to allow 0 or 1 argument
