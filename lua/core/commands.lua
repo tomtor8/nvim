@@ -78,7 +78,10 @@ vim.api.nvim_create_user_command("Format", function()
         -- 4. Move the cursor back to where it was (optional but nice)
         vim.cmd("normal! G''")
     else
-        notify.notify_floating("No formatter defined for " .. ft, "Apply Format")
+        notify.notify_floating(
+            "No formatter defined for " .. ft,
+            "Apply Format"
+        )
     end
 end, { desc = "Format current buffer based on filetype" })
 
@@ -244,6 +247,90 @@ vim.keymap.set(
     ":MacroSelectRange<CR>",
     { desc = "Run macro on selected lines" }
 )
+
+-- Select Substitute Pattern {{{1
+-- Define your list of pre-configured substitute patterns
+-- Usage: `:SubSelect` on the current line
+-- `:%SubSelect` or `:15,20Subselect` or on a range in visual mode
+local labeled_subs = {
+    { label = "Strip trailing whitespace", pattern = [[\s\+$]], replace = "" },
+    {
+        label = "Convert snake_case to camelCase",
+        pattern = [[\v_([a-z])]],
+        replace = [[\u\1]],
+    },
+    {
+        label = "Wrap word in quotes (simple)",
+        pattern = [[\v(\w+)]],
+        replace = [["\1"]],
+    },
+    {
+        label = "Replace **E|I|O..** with `E|I..`",
+        pattern = [[\v\*\*(E|I|IE|UE|O|U)\*\*]],
+        replace = [[`\1`]],
+    },
+    {
+        label = [[Replace **\-text** with `-text`]],
+        pattern = [[\v\*\*\\(-.{-})\*\*]],
+        replace = [[`\1`]],
+    },
+}
+
+vim.api.nvim_create_user_command("SubSelect", function(opts)
+    -- Grab the range boundaries provided by the user command
+    local start_line = opts.line1
+    local end_line = opts.line2
+
+    vim.ui.select(labeled_subs, {
+        prompt = string.format(
+            "Apply substitution on lines %d-%d:",
+            start_line,
+            end_line
+        ),
+        format_item = function(item)
+            return string.format(
+                "%s  ➔  (:s/%s/%s/)",
+                item.label,
+                item.pattern,
+                item.replace
+            )
+        end,
+    }, function(choice)
+        if choice then
+            -- Construct the classic Ex command: '<,>s/pattern/replace/g'
+            -- We use 'g' for global (all occurrences on the line) and 'e' to suppress errors if no match is found
+            local cmd = string.format(
+                "%d,%ds/%s/%s/ge",
+                start_line,
+                end_line,
+                choice.pattern,
+                choice.replace
+            )
+
+            -- Safely execute the substitution
+            local success, err = pcall(function()
+                vim.cmd(cmd)
+            end)
+
+            if success then
+                notify.notify_floating(
+                    string.format(
+                        "Applied: %s (Lines %d-%d)",
+                        choice.label,
+                        start_line,
+                        end_line
+                    ),
+                    "Substitute"
+                )
+            else
+                notify.notify_floating(
+                    "Substitution failed: " .. tostring(err),
+                    "Substitute"
+                )
+            end
+        end
+    end)
+end, { range = true }) -- Crucial: enables range parsing (`%`, `.,+5`, visual selection)
 
 -- Load Macros to a selected register {{{1
 -- optional argument is the register, can be any alphabet key
