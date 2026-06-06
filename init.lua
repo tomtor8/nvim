@@ -3,7 +3,7 @@ vim.g.maplocalleader = " "
 
 -- FOLDING
 -- Make the fold lines look more subtle
-vim.api.nvim_set_hl(0, "Folded", { fg = "#5C6773", bg = "NONE", italic = true })
+-- vim.api.nvim_set_hl(0, "Folded", { fg = "#5C6773", bg = "NONE", italic = true })
 vim.opt.foldmethod = "marker"
 vim.opt.foldmarker = "{{{,}}}"
 
@@ -37,7 +37,7 @@ require("core.keymaps")
 
 require("core.commands")
 
-require("core.colors")
+-- require("core.colors")
 
 require("core.statusline")
 
@@ -50,6 +50,9 @@ require("core.abbreviations")
 -- require("core.greeter") -- now using mini.starter
 
 require("core.lsp")
+
+vim.cmd("colorscheme default")
+
 
 -- PLUGINS
 -- UPDATE all with command `:lua vim.pack.update()`
