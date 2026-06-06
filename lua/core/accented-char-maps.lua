@@ -29,9 +29,14 @@ function M.setup()
     }
 
     for key, val in pairs(instant_maps) do
-        -- buffer = true is the KEY here. 
+        -- buffer = true is the KEY here.
         -- It makes the map local to the current file only.
-        vim.keymap.set("i", key, val, { noremap = true, silent = true, buffer = true })
+        vim.keymap.set(
+            "i",
+            key,
+            val,
+            { noremap = true, silent = true, buffer = true }
+        )
     end
 end
 

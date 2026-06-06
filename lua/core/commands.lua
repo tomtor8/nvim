@@ -48,7 +48,7 @@ local formatters = {
     css = "prettier --write %",
     html = "prettier --write %",
     fish = "fish_indent -w %",
-    lua = "stylua %",
+    lua = "stylua --indent-type=Spaces --indent-width=4 --quote-style=AutoPreferDouble --column-width=80 %",
     python = "ruff format %",
     javascript = "prettier --write %",
     markdown = "prettier --write %",

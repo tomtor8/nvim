@@ -190,9 +190,9 @@ vim.lsp.enable("filepaths_ls")
 -- TOML {{{1
 
 vim.lsp.config("tombi", {
-    cmd = {"tombi", "lsp"},
-    filetypes = {"toml"},
-    root_markers = {"tombi.toml", ".git"}
+    cmd = { "tombi", "lsp" },
+    filetypes = { "toml" },
+    root_markers = { "tombi.toml", ".git" },
 })
 
 vim.lsp.enable("tombi")

@@ -77,7 +77,12 @@ local k = vim.keymap
 -- end, { desc = "Safe Snippet Expand" })
 
 -- JK to escape {{{2
-k.set("i", "jk", "<Esc>", { desc = "Exit to Normal Mode", noremap = true, silent = true })
+k.set(
+    "i",
+    "jk",
+    "<Esc>",
+    { desc = "Exit to Normal Mode", noremap = true, silent = true }
+)
 
 -- <Enter> selects completion {{{2
 -- k.set("i", "<CR>", function()
@@ -87,7 +92,7 @@ k.set("i", "jk", "<Esc>", { desc = "Exit to Normal Mode", noremap = true, silent
 --     if info.selected ~= -1 then
 --       return "<C-y>" -- Confirm the selection
 --     end
---     -- If the menu is open but nothing is highlighted, 
+--     -- If the menu is open but nothing is highlighted,
 --     -- close the menu and just start a new line
 --     return "<C-e><CR>"
 --   end
@@ -124,16 +129,16 @@ k.set("i", "jk", "<Esc>", { desc = "Exit to Normal Mode", noremap = true, silent
 
 -- Get out of enclosing brackets or quotes C-K {{{2
 k.set("i", "<C-k>", function()
-	local col = vim.fn.col(".")
-	local line = vim.fn.getline(".")
-	local char_after = line:sub(col, col)
+    local col = vim.fn.col(".")
+    local line = vim.fn.getline(".")
+    local char_after = line:sub(col, col)
 
-	-- If the next character is a closing symbol, move past it
-	if char_after:match("[%])}%'\"]") then
-		return "<Right>"
-	else
-		return "<End>"
-	end
+    -- If the next character is a closing symbol, move past it
+    if char_after:match("[%])}%'\"]") then
+        return "<Right>"
+    else
+        return "<End>"
+    end
 end, { expr = true })
 
 -- Path completion {{{2
@@ -147,27 +152,36 @@ k.set("i", "<C-f>", "<C-x><C-f>", { desc = "Path completion" })
 -- Normal mode {{{1
 -- Toggle cmdheight between 0 and 1 {{{2
 vim.keymap.set("n", "<leader>h", function()
-	if vim.opt.cmdheight:get() == 0 then
-		vim.opt.cmdheight = 1
-		print("Command line: ON")
-	else
-		vim.opt.cmdheight = 0
-	end
+    if vim.opt.cmdheight:get() == 0 then
+        vim.opt.cmdheight = 1
+        print("Command line: ON")
+    else
+        vim.opt.cmdheight = 0
+    end
 end, { desc = "Toggle cmdheight" })
 
 -- Show full error message in floating window {{{2
-k.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show diagnostic error messages" })
-
+k.set(
+    "n",
+    "<leader>d",
+    vim.diagnostic.open_float,
+    { desc = "Show diagnostic error messages" }
+)
 
 -- Quickfix list {{{2
 -- List all errors in the project
-k.set("n", "<leader>q", vim.diagnostic.setqflist, { desc = "Open diagnostic [Q]uickfix list" })
+k.set(
+    "n",
+    "<leader>q",
+    vim.diagnostic.setqflist,
+    { desc = "Open diagnostic [Q]uickfix list" }
+)
 
 -- Open & Close terminal {{{2
 k.set("n", "<leader>tt", function()
-	vim.cmd("split | term")
-	vim.cmd("resize 10")
-	vim.cmd("startinsert")
+    vim.cmd("split | term")
+    vim.cmd("resize 10")
+    vim.cmd("startinsert")
 end, { desc = "Toggle Terminal" })
 
 -- Make exiting Terminal mode easier (Esc to return to Normal mode in term)
@@ -179,25 +193,30 @@ k.set("n", "<leader>i", "<cmd>set list!<CR>", { silent = true })
 -- Toggle relativenumbers {{{2
 -- Toggle relative numbers with visual feedback
 vim.keymap.set("n", "<leader>tr", function()
-	vim.opt.relativenumber = not vim.opt.relativenumber:get()
-	-- Optional feedback (uses your existing message clearing logic)
-	local status = vim.opt.relativenumber:get() and "Enabled" or "Disabled"
-	vim.api.nvim_echo({ { "Relative Number: " .. status, "None" } }, false, {})
+    vim.opt.relativenumber = not vim.opt.relativenumber:get()
+    -- Optional feedback (uses your existing message clearing logic)
+    local status = vim.opt.relativenumber:get() and "Enabled" or "Disabled"
+    vim.api.nvim_echo({ { "Relative Number: " .. status, "None" } }, false, {})
 end, { silent = true, desc = "Toggle relative line numbers" })
 
 -- Toggle wrap and linebreak {{{2
 k.set("n", "<leader>tw", function()
-	vim.opt.wrap = not vim.opt.wrap:get()
-	vim.opt.linebreak = not vim.opt.linebreak:get()
-	-- Optional: Print a status message to the command line
-	local status = vim.opt.wrap:get() and "Enabled" or "Disabled"
-	print("Wrap/Linebreak: " .. status)
+    vim.opt.wrap = not vim.opt.wrap:get()
+    vim.opt.linebreak = not vim.opt.linebreak:get()
+    -- Optional: Print a status message to the command line
+    local status = vim.opt.wrap:get() and "Enabled" or "Disabled"
+    print("Wrap/Linebreak: " .. status)
 end, { silent = true, desc = "Toggle Wrap and Linebreak" })
 
 -- Toggle Netrw in a vertical split {{{2
 -- k.set("n", "<leader>e", "<cmd>Lexplore<CR>", { desc = "Toggle Explorer" })
 -- open MiniFiles
-k.set("n", "<leader>e", "<cmd>lua MiniFiles.open()<CR>", { desc = "Open File Explorer" })
+k.set(
+    "n",
+    "<leader>e",
+    "<cmd>lua MiniFiles.open()<CR>",
+    { desc = "Open File Explorer" }
+)
 
 -- Motions & Jumps {{{2
 -- Line jumps {{{3
@@ -206,12 +225,12 @@ k.set("n", "gl", "$", { desc = "Move to end of line", silent = true })
 -- Diagnostic jumps {{{3
 -- Jump to the previous diagnostic (up)
 vim.keymap.set("n", "[d", function()
-	vim.diagnostic.jump({ count = -1, float = true })
+    vim.diagnostic.jump({ count = -1, float = true })
 end, { desc = "Go to previous diagnostic" })
 
 -- Jump to the next diagnostic (down)
 vim.keymap.set("n", "]d", function()
-	vim.diagnostic.jump({ count = 1, float = true })
+    vim.diagnostic.jump({ count = 1, float = true })
 end, { desc = "Go to next diagnostic" })
 
 -- Clear highlights {{{2
@@ -221,22 +240,67 @@ k.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
 -- Navigate buffers using Shift + h/l
 -- :bnext and :bprevious are the built-in commands for this
 k.set("n", "L", "<cmd>bnext<CR>", { desc = "Next buffer", silent = true })
-k.set("n", "H", "<cmd>bprevious<CR>", { desc = "Previous buffer", silent = true })
+k.set(
+    "n",
+    "H",
+    "<cmd>bprevious<CR>",
+    { desc = "Previous buffer", silent = true }
+)
 -- Close the current buffer
-k.set("n", "<leader>x", "<cmd>bdelete<CR>", { desc = "Close buffer", silent = true })
+k.set(
+    "n",
+    "<leader>x",
+    "<cmd>bdelete<CR>",
+    { desc = "Close buffer", silent = true }
+)
 
 -- Search & Substitute {{{2
 
 -- Find files with :Pick files
 k.set("n", "<leader>ff", "<cmd>Pick files<CR>", { desc = "Pick files in cwd" })
 k.set("n", "<leader>fo", "<cmd>Pick old files<CR>", { desc = "Pick old files" })
-k.set("n", "<leader>fh", "<cmd>Pick explorer cwd='/home/tom'<CR>", { desc = "Explore Home" })
-k.set("n", "<leader>fn", "<cmd>Pick explorer cwd='/home/tom/Documents/notes'<CR>", { desc = "Explore Notes" })
-k.set("n", "<leader>fD", "<cmd>Pick explorer cwd='/home/tom/Documents'<CR>", { desc = "Explore Documents" })
-k.set("n", "<leader>fc", "<cmd>Pick explorer cwd='/home/tom/.config'<CR>", { desc = "Explore Configs" })
-k.set("n", "<leader>fp", "<cmd>Pick explorer cwd='/home/tom/Projects'<CR>", { desc = "Explore Projects" })
-k.set("n", "<leader>fd", "<cmd>Pick explorer cwd='/home/tom/Code/dotfiles'<CR>", { desc = "Explore Dotfiles" })
-k.set("n", "<leader>fr", "<cmd>Pick grep_live<CR>", { desc = "Grep files with Pick" })
+k.set(
+    "n",
+    "<leader>fh",
+    "<cmd>Pick explorer cwd='/home/tom'<CR>",
+    { desc = "Explore Home" }
+)
+k.set(
+    "n",
+    "<leader>fn",
+    "<cmd>Pick explorer cwd='/home/tom/Documents/notes'<CR>",
+    { desc = "Explore Notes" }
+)
+k.set(
+    "n",
+    "<leader>fD",
+    "<cmd>Pick explorer cwd='/home/tom/Documents'<CR>",
+    { desc = "Explore Documents" }
+)
+k.set(
+    "n",
+    "<leader>fc",
+    "<cmd>Pick explorer cwd='/home/tom/.config'<CR>",
+    { desc = "Explore Configs" }
+)
+k.set(
+    "n",
+    "<leader>fp",
+    "<cmd>Pick explorer cwd='/home/tom/Projects'<CR>",
+    { desc = "Explore Projects" }
+)
+k.set(
+    "n",
+    "<leader>fd",
+    "<cmd>Pick explorer cwd='/home/tom/Code/dotfiles'<CR>",
+    { desc = "Explore Dotfiles" }
+)
+k.set(
+    "n",
+    "<leader>fr",
+    "<cmd>Pick grep_live<CR>",
+    { desc = "Grep files with Pick" }
+)
 
 -- Substitute in very magic mode
 k.set("n", "<C-s>", [[:%s/\v]], { desc = "Substitute in very magic mode" })
@@ -253,10 +317,10 @@ k.set("v", "/", [[/\v]])
 
 -- Search and replace word under cursor
 k.set(
-	"n",
-	"<leader>s",
-	[[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gIc<Left><Left><Left><Left>]],
-	{ desc = "Search and replace word under cursor" }
+    "n",
+    "<leader>s",
+    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gIc<Left><Left><Left><Left>]],
+    { desc = "Search and replace word under cursor" }
 )
 
 -- System clipboard {{{2
@@ -309,4 +373,3 @@ k.set("v", ">", ">gv")
 -- VISUAL MODE EXCLUDING SELECT MODE
 -- Paste without losing the original yank
 k.set("x", "<leader>p", [["_dP]])
-

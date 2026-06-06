@@ -31,13 +31,13 @@ o.splitright = true
 -- Whitespace Rendering
 o.list = true
 o.listchars = {
-	-- tab = "▸ ",
-	trail = "·",
-	-- leadmultispace = "   ",
-	extends = "»", -- Text continues right
-	precedes = "«", -- Text continues left
-	-- create non-breaking space Ctrl+v then `u` then `00a0`
-	nbsp = "␣", -- Non-breaking space
+    -- tab = "▸ ",
+    trail = "·",
+    -- leadmultispace = "   ",
+    extends = "»", -- Text continues right
+    precedes = "«", -- Text continues left
+    -- create non-breaking space Ctrl+v then `u` then `00a0`
+    nbsp = "␣", -- Non-breaking space
 }
 o.fillchars:append({ vert = "│", eob = " ", fold = " " })
 o.wrap = false
@@ -64,16 +64,16 @@ o.wildignorecase = true
 -- Dictionaries & Completion Sources
 o.dictionary:append("~/Code/dotfiles/dics/spanish.txt")
 o.wildignore:append({
-	"*/.git/*",
-	"*/node_modules/*",
-	"*/.venv/*",
-	"*/build/*",
-	"*/dist/*",
-	"*.pyc",
-	"__pycache__",
-	"*.DS_Store",
-	"*.swp",
-	"*/.local/share/*",
+    "*/.git/*",
+    "*/node_modules/*",
+    "*/.venv/*",
+    "*/build/*",
+    "*/dist/*",
+    "*.pyc",
+    "__pycache__",
+    "*.DS_Store",
+    "*.swp",
+    "*/.local/share/*",
 })
 
 -- 4. INDENTATION & TABS {{{1
@@ -91,15 +91,16 @@ g.netrw_winsize = 33
 
 -- Auto-cleanup empty ghost buffers after opening netrw
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "netrw",
-	callback = function()
-		local prev_buf = vim.fn.bufnr("#")
-		if vim.api.nvim_buf_is_valid(prev_buf) then
-			local name = vim.api.nvim_buf_get_name(prev_buf)
-			local buftype = vim.api.nvim_get_option_value("buftype", { buf = prev_buf })
-			if name == "" and buftype == "" then
-				vim.api.nvim_buf_delete(prev_buf, { force = true })
-			end
-		end
-	end,
+    pattern = "netrw",
+    callback = function()
+        local prev_buf = vim.fn.bufnr("#")
+        if vim.api.nvim_buf_is_valid(prev_buf) then
+            local name = vim.api.nvim_buf_get_name(prev_buf)
+            local buftype =
+                vim.api.nvim_get_option_value("buftype", { buf = prev_buf })
+            if name == "" and buftype == "" then
+                vim.api.nvim_buf_delete(prev_buf, { force = true })
+            end
+        end
+    end,
 })

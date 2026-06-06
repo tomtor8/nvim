@@ -3,7 +3,6 @@ vim.g.maplocalleader = " "
 
 -- FOLDING
 -- Make the fold lines look more subtle
--- vim.api.nvim_set_hl(0, "Folded", { fg = "#5C6773", bg = "NONE", italic = true })
 vim.opt.foldmethod = "marker"
 vim.opt.foldmarker = "{{{,}}}"
 
@@ -37,8 +36,6 @@ require("core.keymaps")
 
 require("core.commands")
 
--- require("core.colors")
-
 require("core.statusline")
 
 require("core.bufferline")
@@ -53,12 +50,12 @@ require("core.lsp")
 
 -- machine specific colorscheme - see .gitignore for usage
 -- Default theme settings
-local theme = "ayu-dark"
+local theme = "default"
 
 -- Check if local_settings.lua exists
 local has_local, local_settings = pcall(require, "local-settings")
 if has_local and local_settings.theme then
-  theme = local_settings.theme
+    theme = local_settings.theme
 end
 
 -- Apply the colorscheme
@@ -107,7 +104,11 @@ require("ibl").setup({
         highlight = { "Function", "Label" }, -- Uses existing theme colors
         include = {
             node_type = {
-                lua = { "return_statement", "table_constructor", "function_call" },
+                lua = {
+                    "return_statement",
+                    "table_constructor",
+                    "function_call",
+                },
                 python = {
                     "function_definition",
                     "class_definition",

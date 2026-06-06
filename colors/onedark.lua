@@ -3,34 +3,34 @@ vim.cmd("highlight clear")
 if vim.fn.exists("syntax_on") == 1 then
     vim.cmd("syntax reset")
 end
-vim.g.colors_name = "ayu-dark"
+vim.g.colors_name = "onedark"
 
--- 2. Centralized Color Palette
+-- 2. Centralized Color Palette (One Dark Spec)
 local colors = {
-    bg = "#0B0E14",
-    fg = "#B3B1AD",
-    fold = "#5C6773",
-    panel = "#161922",
-    border = "#252B35",
-    comment = "#636A72",
-    gutter = "#454B55",
-    non_text = "#505662",
-    pmenu_fg = "#BFBDB6",
-    visual_bg = "#274364",
+    bg = "#282c34",
+    fg = "#abb2bf",
+    fold = "#5c6370",
+    panel = "#21252b",
+    border = "#181a1f",
+    comment = "#5c6370",
+    gutter = "#4b5263",
+    non_text = "#3e4452",
+    pmenu_fg = "#b6bdca",
+    visual_bg = "#3e4452",
     -- Accent Colors
-    yellow = "#E6B450",
-    light_yellow = "#F1FA8C",
-    orange = "#F29668",
-    dark_orange = "#f29718",
-    red = "#FF3333",
-    light_red = "#F07178",
-    purple = "#A37ACC",
-    lavender = "#D2A6FF",
-    blue = "#55B4D4",
-    cyan = "#5CCFE6",
-    green = "#AAD94C",
-    lime = "#B8CC52",
-    mint = "#90dec5",
+    yellow = "#e5c07b",
+    light_yellow = "#e2c08d",
+    orange = "#d19a66",
+    dark_orange = "#c18a56",
+    red = "#e06c75",
+    light_red = "#e47c84",
+    purple = "#c678dd",
+    lavender = "#b478ed",
+    blue = "#61afef",
+    cyan = "#56b6c2",
+    green = "#98c379",
+    lime = "#a3cc84",
+    mint = "#7bc299",
 }
 
 -- 3. Base Highlights (Core UI and Syntax styling)
@@ -42,7 +42,7 @@ local base_highlights = {
     FixmeLabel = { fg = colors.bg, bg = colors.red, bold = true },
     FloatBorder = { fg = colors.blue, bg = "none" },
     Folded = { fg = colors.fold, bg = "none", italic = true },
-    Function = { fg = colors.orange },
+    Function = { fg = colors.blue }, -- One Dark uses blue for functions
     LineNr = { fg = colors.gutter, italic = true },
     MiniPickMatchCurrent = { fg = colors.yellow, bg = "none", bold = true },
     NonText = { fg = colors.non_text, italic = false },
@@ -52,7 +52,7 @@ local base_highlights = {
     PmenuSel = { fg = colors.yellow, bg = "none", bold = true },
     Search = { fg = colors.bg, bg = colors.yellow },
     Special = { fg = colors.cyan },
-    Statement = { fg = colors.cyan, bold = true },
+    Statement = { fg = colors.purple, bold = true }, -- One Dark uses purple for statements/keywords
     String = { fg = colors.green },
     TabSeparator = { fg = colors.border, bg = colors.bg },
     TodoLabel = { fg = colors.bg, bg = colors.mint, bold = true },
@@ -80,32 +80,32 @@ local base_highlights = {
 
     -- Markdown highlights
     ["@markup.heading.1.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.2.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.3.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.4.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.5.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.6.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },

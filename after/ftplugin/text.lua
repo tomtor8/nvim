@@ -3,9 +3,9 @@ require("core.accented-char-maps").setup() -- import accented char abbreviations
 local o = vim.opt_local
 local k = vim.keymap
 
-o.wrap = true          -- Enable visual wrapping
-o.expandtab = true     -- tabs turning to spaces
-o.linebreak = true      -- Don't break words in the middle
+o.wrap = true -- Enable visual wrapping
+o.expandtab = true -- tabs turning to spaces
+o.linebreak = true -- Don't break words in the middle
 o.cpoptions:append("n") -- Respect line breaks in wrapped lines
 o.commentstring = "# %s" -- custom comments also great for folds
 vim.fn.matchadd("Comment", "^#.*")

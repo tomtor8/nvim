@@ -3,46 +3,46 @@ vim.cmd("highlight clear")
 if vim.fn.exists("syntax_on") == 1 then
     vim.cmd("syntax reset")
 end
-vim.g.colors_name = "ayu-dark"
+vim.g.colors_name = "catppuccin-mocha"
 
--- 2. Centralized Color Palette
+-- 2. Centralized Color Palette (Catppuccin Mocha Spec)
 local colors = {
-    bg = "#0B0E14",
-    fg = "#B3B1AD",
-    fold = "#5C6773",
-    panel = "#161922",
-    border = "#252B35",
-    comment = "#636A72",
-    gutter = "#454B55",
-    non_text = "#505662",
-    pmenu_fg = "#BFBDB6",
-    visual_bg = "#274364",
+    bg = "#1e1e2e", -- Base
+    fg = "#cdd6f4", -- Text
+    fold = "#6c7086", -- Overlay 0
+    panel = "#181825", -- Mantle
+    border = "#11111b", -- Crust
+    comment = "#a6adc8", -- Subtext 0
+    gutter = "#45475a", -- Surface 1
+    non_text = "#585b70", -- Surface 2
+    pmenu_fg = "#bac2de", -- Subtext 1
+    visual_bg = "#313244", -- Surface 0
     -- Accent Colors
-    yellow = "#E6B450",
-    light_yellow = "#F1FA8C",
-    orange = "#F29668",
-    dark_orange = "#f29718",
-    red = "#FF3333",
-    light_red = "#F07178",
-    purple = "#A37ACC",
-    lavender = "#D2A6FF",
-    blue = "#55B4D4",
-    cyan = "#5CCFE6",
-    green = "#AAD94C",
-    lime = "#B8CC52",
-    mint = "#90dec5",
+    yellow = "#f9e2af", -- Yellow
+    light_yellow = "#f5e0dc", -- Rosewater
+    orange = "#fab387", -- Peach
+    dark_orange = "#ef9f76", -- Maroon
+    red = "#f38ba8", -- Red
+    light_red = "#eba0ac", -- Flamingo
+    purple = "#cba6f7", -- Mauve
+    lavender = "#b4befe", -- Lavender
+    blue = "#89b4fa", -- Blue
+    cyan = "#89dceb", -- Sky
+    green = "#a6e3a1", -- Green
+    lime = "#b4befe", -- Light tone alternative (using Lavender for cohesive highlights)
+    mint = "#94e2d5", -- Teal
 }
 
 -- 3. Base Highlights (Core UI and Syntax styling)
 local base_highlights = {
     Comment = { fg = colors.comment, italic = true },
-    Constant = { fg = colors.lavender },
+    Constant = { fg = colors.orange }, -- Catppuccin uses peach/orange for constants
     CursorLine = { bg = "none" },
     CursorLineNr = { fg = colors.yellow, bold = true, italic = true },
     FixmeLabel = { fg = colors.bg, bg = colors.red, bold = true },
     FloatBorder = { fg = colors.blue, bg = "none" },
     Folded = { fg = colors.fold, bg = "none", italic = true },
-    Function = { fg = colors.orange },
+    Function = { fg = colors.blue },
     LineNr = { fg = colors.gutter, italic = true },
     MiniPickMatchCurrent = { fg = colors.yellow, bg = "none", bold = true },
     NonText = { fg = colors.non_text, italic = false },
@@ -51,8 +51,8 @@ local base_highlights = {
     Pmenu = { fg = colors.pmenu_fg, bg = "none" },
     PmenuSel = { fg = colors.yellow, bg = "none", bold = true },
     Search = { fg = colors.bg, bg = colors.yellow },
-    Special = { fg = colors.cyan },
-    Statement = { fg = colors.cyan, bold = true },
+    Special = { fg = colors.light_yellow },
+    Statement = { fg = colors.purple, bold = true }, -- Catppuccin uses mauve for keywords
     String = { fg = colors.green },
     TabSeparator = { fg = colors.border, bg = colors.bg },
     TodoLabel = { fg = colors.bg, bg = colors.mint, bold = true },
@@ -65,7 +65,7 @@ local base_highlights = {
     StatusGit = { fg = colors.comment, italic = false },
     StatusLine = { fg = colors.pmenu_fg, bg = colors.panel },
     StatusLspName = { fg = colors.comment, bg = "none", italic = false },
-    StatusNormal = { fg = colors.bg, bg = colors.lime, bold = true },
+    StatusNormal = { fg = colors.bg, bg = colors.green, bold = true }, -- Swapped lime to native green for cleaner look
     StatusReplace = { fg = colors.bg, bg = colors.light_red, bold = true },
     StatusVisual = { fg = colors.bg, bg = colors.orange, bold = true },
     StatusWarn = { fg = colors.dark_orange, bg = "none", bold = true },
@@ -80,37 +80,37 @@ local base_highlights = {
 
     -- Markdown highlights
     ["@markup.heading.1.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.2.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
-    },
+    }, -- Catppuccin scales heading colors
     ["@markup.heading.3.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.4.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.5.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.heading.6.markdown"] = {
-        fg = colors.light_red,
+        fg = colors.red,
         bg = colors.border,
         bold = true,
     },
     ["@markup.italic"] = { fg = colors.light_yellow, italic = true },
-    ["@markup.strong"] = { fg = colors.yellow, bold = true },
+    ["@markup.strong"] = { fg = colors.orange, bold = true },
     ["@markup.raw.markdown_inline"] = { fg = colors.purple, bg = colors.border },
     ["@markup.raw.block.markdown"] = { fg = colors.fg, bg = "none" },
     ["@markup.list.markdown"] = { fg = colors.mint },
@@ -126,7 +126,7 @@ local base_highlights = {
     },
     -- todos
     ["@markup.list.unchecked.markdown"] = { fg = colors.red },
-    ["@markup.list.checked.markdown"] = { fg = colors.lime },
+    ["@markup.list.checked.markdown"] = { fg = colors.green },
 }
 
 -- 4. Highlight Links (DRY Aliases)

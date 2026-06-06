@@ -38,11 +38,11 @@
 -- 2. Use 'iabbrev' ONLY for alphanumeric words
 -- This triggers after you hit SPACE
 local words = {
-	emg = "tomas.torday@gmail.com",
-	emm = "tomas.torday@medicyt.sk",
-    ff1 = "{{{1"
+    emg = "tomas.torday@gmail.com",
+    emm = "tomas.torday@medicyt.sk",
+    ff1 = "{{{1",
 }
 
 for abbr, expansion in pairs(words) do
-	vim.cmd(string.format("iabbrev %s %s", abbr, expansion))
+    vim.cmd(string.format("iabbrev %s %s", abbr, expansion))
 end

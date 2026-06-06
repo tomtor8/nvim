@@ -63,4 +63,3 @@ a.nvim_create_autocmd({ "BufWritePost", "TextYankPost" }, {
         end, 5000)
     end,
 })
-
