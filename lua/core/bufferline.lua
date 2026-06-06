@@ -1,9 +1,9 @@
 local a = vim.api
 local o = vim.opt
 
-a.nvim_set_hl(0, "TabLine", { fg = "#565B66", bg = "#0F131A" }) -- Inactive tabs
-a.nvim_set_hl(0, "TabLineSel", { fg = "#0B0E14", bg = "#E6B450", bold = true }) -- Active tab
-a.nvim_set_hl(0, "TabLineFill", { bg = "none" }) -- The empty space
+-- a.nvim_set_hl(0, "TabLine", { fg = "#565B66", bg = "#0F131A" }) -- Inactive tabs
+-- a.nvim_set_hl(0, "TabLineSel", { fg = "#0B0E14", bg = "#E6B450", bold = true }) -- Active tab
+-- a.nvim_set_hl(0, "TabLineFill", { bg = "none" }) -- The empty space
 
 -- The click handler must be global (_G) to be visible to the statusline
 function _G.switch_buffer_click(bufnr, _, button, _)
@@ -103,9 +103,9 @@ o.tabline = "%!v:lua.simple_bufferline()"
 o.showtabline = 2 -- set to 0 to disable
 
 -- Active: Gold and Bold
-a.nvim_set_hl(0, "WinBar", { fg = "#BFBDB6", bg = "#161922", bold = true })
+-- a.nvim_set_hl(0, "WinBar", { fg = "#BFBDB6", bg = "#161922", bold = true })
 -- Inactive: Muted Grey
-a.nvim_set_hl(0, "WinBarNC", { fg = "#565B66", bg = "#161922", italic = true })
+-- a.nvim_set_hl(0, "WinBarNC", { fg = "#565B66", bg = "#161922", italic = true })
 
 function _G.simple_winbar()
 	local winid = vim.g.statusline_winid or 0

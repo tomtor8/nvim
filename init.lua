@@ -51,7 +51,7 @@ require("core.abbreviations")
 
 require("core.lsp")
 
-vim.cmd("colorscheme default")
+vim.cmd("colorscheme ayu-dark")
 
 
 -- PLUGINS

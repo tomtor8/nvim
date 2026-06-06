@@ -68,6 +68,14 @@ local base_highlights = {
   StatusReplace        = { fg = colors.bg, bg = colors.light_red, bold = true },
   StatusVisual         = { fg = colors.bg, bg = colors.orange, bold = true },
   StatusWarn           = { fg = colors.dark_orange, bg = "none", bold = true },
+
+  -- Tabline compomnents
+  TabLine              = { fg = colors.non_text, bg = colors.bg},
+  TabLineSel           = { fg = colors.bg, bg = colors.yellow},
+
+  -- Winbar components
+  WinBar               = { fg = colors.pmenu_fg, bg = colors.panel, bold = true },
+  WinBarNC             = { fg = colors.non_text, bg = colors.panel, italic = true },
 }
 
 -- 4. Highlight Links (DRY Aliases)
@@ -91,9 +99,10 @@ end
 -- 7. Transparency Configuration
 local function transparent_background()
   local groups = {
+    "EndOfBuffer",
     "NormalFloat",
     "SignColumn",
-    "EndOfBuffer",
+    "TabLineFill",
   }
   for _, group in ipairs(groups) do
     pcall(vim.api.nvim_set_hl, 0, group, { bg = "NONE" })
