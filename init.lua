@@ -51,8 +51,18 @@ require("core.abbreviations")
 
 require("core.lsp")
 
-vim.cmd("colorscheme ayu-dark")
+-- machine specific colorscheme - see .gitignore for usage
+-- Default theme settings
+local theme = "ayu-dark"
 
+-- Check if local_settings.lua exists
+local has_local, local_settings = pcall(require, "local-settings")
+if has_local and local_settings.theme then
+  theme = local_settings.theme
+end
+
+-- Apply the colorscheme
+pcall(vim.cmd.colorscheme, theme)
 
 -- PLUGINS
 -- UPDATE all with command `:lua vim.pack.update()`
