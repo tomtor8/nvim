@@ -19,6 +19,7 @@ local colors = {
   visual_bg     = "#274364",
   -- Accent Colors
   yellow        = "#E6B450",
+  light_yellow  = "#F1FA8C",
   orange        = "#F29668",
   dark_orange   = "#f29718",
   red           = "#FF3333",
@@ -71,11 +72,34 @@ local base_highlights = {
 
   -- Tabline compomnents
   TabLine              = { fg = colors.non_text, bg = colors.bg},
-  TabLineSel           = { fg = colors.bg, bg = colors.yellow},
+  TabLineSel           = { fg = colors.bg, bg = colors.yellow, bold = true },
 
   -- Winbar components
   WinBar               = { fg = colors.pmenu_fg, bg = colors.panel, bold = true },
   WinBarNC             = { fg = colors.non_text, bg = colors.panel, italic = true },
+
+  -- Markdown highlights
+  ["@markup.heading.1.markdown"] = { fg = colors.light_red, bg = colors.border, bold = true },
+  ["@markup.heading.2.markdown"] = { fg = colors.light_red, bg = colors.border, bold = true },
+  ["@markup.heading.3.markdown"] = { fg = colors.light_red, bg = colors.border, bold = true },
+  ["@markup.heading.4.markdown"] = { fg = colors.light_red, bg = colors.border, bold = true },
+  ["@markup.heading.5.markdown"] = { fg = colors.light_red, bg = colors.border, bold = true },
+  ["@markup.heading.6.markdown"] = { fg = colors.light_red, bg = colors.border, bold = true },
+  ["@markup.italic"] = { fg = colors.light_yellow, italic = true },
+  ["@markup.strong"] = { fg = colors.yellow, bold = true },
+  ["@markup.raw.markdown_inline"] = { fg = colors.purple, bg = colors.border },
+  ["@markup.raw.block.markdown"] = { fg = colors.fg, bg = "none" },
+  ["@markup.list.markdown"] = { fg = colors.mint },
+  -- tables
+  ["@markup.heading.markdown"] = { fg = colors.blue, bold = true },
+  -- punctuation / dots, dashes, brackets
+  ["@punctuation.special.markdown"] = { fg = colors.gutter },
+  -- links, images
+  ["@markup.link.markdown_inline"] = { fg = colors.lavender },
+  ["@markup.link.label.markdown_inline"] = { fg = colors.lavender, underline = true },
+  -- todos
+  ["@markup.list.unchecked.markdown"] = { fg = colors.green },
+  ["@markup.list.checked.markdown"] = { fg = colors.lime },
 }
 
 -- 4. Highlight Links (DRY Aliases)
