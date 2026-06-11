@@ -332,6 +332,78 @@ vim.api.nvim_create_user_command("SubSelect", function(opts)
     end)
 end, { range = true }) -- Crucial: enables range parsing (`%`, `.,+5`, visual selection)
 
+
+-- Select Commands {{{1
+-- Define your list of pre-configured substitute patterns
+-- Usage: `:%CmdSelect` globally on the whole file
+-- :CmdSelect works only on the cursor line
+-- `:15,20CmdSelect` on a range or in visual mode
+local labeled_cmds = {
+    -- delete 2 lines to a black hole register `_`
+    { label = "Remove lines containing combi", cmnd = [[g/\(^0%$\|^100%$\|^P$\|^P-I$\|^Lit\.$\|^S-I$\|^S-F$\|^FEM\)/.,+1d _]] },
+    { label = "Remove lines containing `0%`", cmnd = [[g/^0%$/.,+1d _]] },
+    { label = "Remove lines containing `100%`", cmnd = [[g/^100%$/.,+1d _]] },
+    { label = "Remove lines containing `Lit.`", cmnd = [[g/^Lit\./.,+1d _]] },
+    { label = "Remove lines containing `S-I`", cmnd = [[g/^S-I/.,+1d _]] },
+    { label = "Remove lines containing `S-F`", cmnd = [[g/^S-F/.,+1d _]] },
+    { label = "Remove lines containing `FEM`", cmnd = [[g/^FEM/.,+1d _]] },
+    { label = "Remove lines containing `P`", cmnd = [[g/^P$/.,+1d _]] },
+    { label = "Remove lines containing `P-I`", cmnd = [[g/^P-I/.,+1d _]] },
+}
+
+vim.api.nvim_create_user_command("CmdSelect", function(opts)
+    -- Grab the range boundaries provided by the user command
+    local start_line = opts.line1
+    local end_line = opts.line2
+
+    vim.ui.select(labeled_cmds, {
+        prompt = string.format(
+            "Apply command on lines %d-%d:",
+            start_line,
+            end_line
+        ),
+        format_item = function(item)
+            return string.format(
+                "%s  ➔  (:%s)",
+                item.label,
+                item.cmnd
+            )
+        end,
+    }, function(choice)
+        if choice then
+            -- construct the command
+            local cmd = string.format(
+                "%d,%d%s",
+                start_line,
+                end_line,
+                choice.cmnd
+            )
+
+            -- Safely execute the substitution
+            local success, err = pcall(function()
+                vim.cmd(cmd)
+            end)
+
+            if success then
+                notify.notify_floating(
+                    string.format(
+                        "Applied: %s (Lines %d-%d)",
+                        choice.label,
+                        start_line,
+                        end_line
+                    ),
+                    "Command"
+                )
+            else
+                notify.notify_floating(
+                    "Command failed: " .. tostring(err),
+                    "Command"
+                )
+            end
+        end
+    end)
+end, { range = true }) -- Crucial: enables range parsing (`%`, `.,+5`, visual selection)
+
 -- Load Macros to a selected register {{{1
 -- optional argument is the register, can be any alphabet key
 -- usage `:MacroLoad` loads the choice to @q - default
