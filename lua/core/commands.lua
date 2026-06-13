@@ -332,7 +332,6 @@ vim.api.nvim_create_user_command("SubSelect", function(opts)
     end)
 end, { range = true }) -- Crucial: enables range parsing (`%`, `.,+5`, visual selection)
 
-
 -- Select Commands {{{1
 -- Define your list of pre-configured substitute patterns
 -- Usage: `:%CmdSelect` globally on the whole file
@@ -340,7 +339,10 @@ end, { range = true }) -- Crucial: enables range parsing (`%`, `.,+5`, visual se
 -- `:15,20CmdSelect` on a range or in visual mode
 local labeled_cmds = {
     -- delete 2 lines to a black hole register `_`
-    { label = "Remove lines containing combi", cmnd = [[g/\(^0%$\|^100%$\|^P$\|^P-I$\|^Lit\.$\|^S-I$\|^S-F$\|^FEM\)/.,+1d _]] },
+    {
+        label = "Remove lines containing combi",
+        cmnd = [[g/\(^0%$\|^100%$\|^P$\|^P-I$\|^Lit\.$\|^S-I$\|^S-F$\|^FEM\)/.,+1d _]],
+    },
     { label = "Remove lines containing `0%`", cmnd = [[g/^0%$/.,+1d _]] },
     { label = "Remove lines containing `100%`", cmnd = [[g/^100%$/.,+1d _]] },
     { label = "Remove lines containing `Lit.`", cmnd = [[g/^Lit\./.,+1d _]] },
@@ -363,21 +365,13 @@ vim.api.nvim_create_user_command("CmdSelect", function(opts)
             end_line
         ),
         format_item = function(item)
-            return string.format(
-                "%s  ➔  (:%s)",
-                item.label,
-                item.cmnd
-            )
+            return string.format("%s  ➔  (:%s)", item.label, item.cmnd)
         end,
     }, function(choice)
         if choice then
             -- construct the command
-            local cmd = string.format(
-                "%d,%d%s",
-                start_line,
-                end_line,
-                choice.cmnd
-            )
+            local cmd =
+                string.format("%d,%d%s", start_line, end_line, choice.cmnd)
 
             -- Safely execute the substitution
             local success, err = pcall(function()
@@ -484,4 +478,115 @@ vim.api.nvim_create_user_command("RemoveBlankLines", function(opts)
 end, {
     range = "%",
     desc = "Remove empty lines in a given range or the whole file",
+})
+
+-- Convert hex colors to rgb or rgba or vice versa {{{1
+-- accepts ranges, e.g., %, 1,5 and so on. default runs on a single line
+-- Custom Neovim command to convert hex colors to rgb/rgba
+a.nvim_create_user_command("Hex2Rgb", function(opts)
+    -- Get the line range from the command context
+    local start_line = opts.line1 - 1
+    local end_line = opts.line2
+
+    -- Grab the lines from the buffer
+    local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
+
+    -- Helper function to convert a hex pair to an integer
+    local function hex_to_dec(hex)
+        return tonumber(hex, 16)
+    end -- <-- Fixed missing 'end' here
+
+    -- Helper function to convert alpha hex to a rounded decimal string
+    local function alpha_to_dec(hex)
+        local dec = tonumber(hex, 16) / 255
+        return string.format("%.2f", dec):gsub("%.?0+$", "")
+    end
+
+    -- Loop through each line and apply the substitution
+    for i, line in ipairs(lines) do
+        -- Match 8-character hex codes (#rrggbbaa)
+        line = line:gsub("#(%x%x)(%x%x)(%x%x)(%x%x)", function(r, g, b, alpha)
+            return string.format(
+                "rgba(%d, %d, %d, %s)",
+                hex_to_dec(r),
+                hex_to_dec(g),
+                hex_to_dec(b),
+                alpha_to_dec(alpha)
+            )
+        end)
+
+        -- Match 6-character hex codes (#rrggbb)
+        line = line:gsub("#(%x%x)(%x%x)(%x%x)", function(r, g, b)
+            return string.format(
+                "rgb(%d, %d, %d)",
+                hex_to_dec(r),
+                hex_to_dec(g),
+                hex_to_dec(b)
+            )
+        end)
+
+        lines[i] = line
+    end
+
+    -- Write the modified lines back to the buffer
+    vim.api.nvim_buf_set_lines(0, start_line, end_line, false, lines)
+end, {
+    range = true,
+    desc = "Convert #rrggbb and #rrggbbaa colors to rgb/rgba",
+})
+
+-- Custom Neovim command to convert rgb/rgba colors to hex
+a.nvim_create_user_command("Rgb2Hex", function(opts)
+    -- Get the line range from the command context
+    local start_line = opts.line1 - 1
+    local end_line = opts.line2
+
+    -- Grab the lines from the buffer
+    local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
+
+    -- Helper function to convert an alpha decimal (e.g., 0.5) to a 2-character hex string
+    local function alpha_to_hex(alpha_str)
+        local alpha = tonumber(alpha_str)
+        if not alpha then
+            return "ff"
+        end
+        -- Scale 0.0-1.0 to 0-255, then round it properly
+        local dec = math.floor(alpha * 255 + 0.5)
+        return string.format("%02x", dec)
+    end
+
+    -- Loop through each line and apply the substitution
+    for i, line in ipairs(lines) do
+        -- 1. Match rgba(%d, %d, %d, %f) format (handles spaces and decimals safely)
+        -- This matches digits, spaces, commas, periods, and trailing alpha values
+        line = line:gsub(
+            "rgba?%s*%(%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*,%s*([%d%.]+)%s*%)",
+            function(r, g, b, alp)
+                local r_hex = string.format("%02x", tonumber(r))
+                local g_hex = string.format("%02x", tonumber(g))
+                local b_hex = string.format("%02x", tonumber(b))
+                local a_hex = alpha_to_hex(alp)
+                return "#" .. r_hex .. g_hex .. b_hex .. a_hex
+            end
+        )
+
+        -- 2. Match standard rgb(%d, %d, %d) format
+        line = line:gsub(
+            "rgb%s*%(%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
+            function(r, g, b)
+                local r_hex = string.format("%02x", tonumber(r))
+                local g_hex = string.format("%02x", tonumber(g))
+                local b_hex = string.format("%02x", tonumber(b))
+                return "#" .. r_hex .. g_hex .. b_hex
+            end
+        )
+
+        lines[i] = line
+    end
+
+    -- Write the modified lines back to the buffer
+    vim.api.nvim_buf_set_lines(0, start_line, end_line, false, lines)
+end, {
+    range = true,
+    desc = "Convert rgb(...) and rgba(...) colors to #rrggbb and #rrggbbaa",
 })
