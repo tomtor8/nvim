@@ -2,7 +2,6 @@
 -- link the original snippets/markdown.json to
 -- nvim/snippets/markdown.json and
 -- nvim/snippets/markdown_inline.json
-require("core.accented-char-maps").setup()
 
 -- Buffer-local settings {{{1
 

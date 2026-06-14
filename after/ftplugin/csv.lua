@@ -1,5 +1,3 @@
-require("core.accented-char-maps").setup() -- import accented char abbreviations
-
 -- Variables {{{1
 local a = vim.api
 local o = vim.opt_local

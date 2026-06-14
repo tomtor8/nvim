@@ -1,5 +1,3 @@
-require("core.accented-char-maps").setup() -- import accented char abbreviations
-
 local o = vim.opt_local
 local k = vim.keymap
 
