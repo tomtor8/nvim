@@ -128,18 +128,18 @@ k.set(
 -- end
 
 -- Get out of enclosing brackets or quotes C-K {{{2
-k.set("i", "<C-k>", function()
-    local col = vim.fn.col(".")
-    local line = vim.fn.getline(".")
-    local char_after = line:sub(col, col)
-
-    -- If the next character is a closing symbol, move past it
-    if char_after:match("[%])}%'\"]") then
-        return "<Right>"
-    else
-        return "<End>"
-    end
-end, { expr = true })
+-- k.set("i", "<C-k>", function()
+--     local col = vim.fn.col(".")
+--     local line = vim.fn.getline(".")
+--     local char_after = line:sub(col, col)
+--
+--     -- If the next character is a closing symbol, move past it
+--     if char_after:match("[%])}%'\"]") then
+--         return "<Right>"
+--     else
+--         return "<End>"
+--     end
+-- end, { expr = true })
 
 -- Path completion {{{2
 -- Instead of C+x and C+f for path autocomplete

@@ -403,12 +403,16 @@ end, { range = true }) -- Crucial: enables range parsing (`%`, `.,+5`, visual se
 -- usage `:MacroLoad` loads the choice to @q - default
 -- `:MacroLoad b` loads the choice to @b and so on...
 local labeled_macros_to_load = {
-    { label = "Wrap word in quotes", macro = 'viw"zc""<Esc>P' },
+    { label = "Bold to InLineCode", macro = [[lBxr`f*xr`]] },
+    { label = "Underline text with ---", macro = [[yyp<c-v>$r-]] },
+    { label = "Wrap text in ---", macro = [[yyp<c-v>$r-yykP]] },
+    { label = "Wrap text in BOX", macro = [[I| <Esc>A |<Esc>yyp<c-v>$r-yykP]] },
     { label = "Append trailing comma", macro = "A,<Esc>" },
     { label = "Bold Word", macro = 'viW"zc**<Esc>pa**<Esc>' },
     { label = "Italic Word", macro = 'viW"zc__<Esc>P' },
     { label = "Inline Code Word", macro = 'viW"zc``<Esc>P' },
     { label = "Definition List line line line", macro = "jI: <Esc>o<Esc>j" },
+    { label = "Wrap word in quotes", macro = 'viw"zc""<Esc>P' },
     {
         label = "BlockQuote line line line",
         macro = "I> _<Esc>A_  <Esc>jI> <Esc>o<Esc>j",
