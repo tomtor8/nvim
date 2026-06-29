@@ -1,4 +1,5 @@
 local k = vim.keymap
+local notify = require("user.notify-floating")
 
 -- -- Load snippets from json {{{1
 -- local function expand_by_ft(prefix)
@@ -159,6 +160,17 @@ vim.keymap.set("n", "<leader>h", function()
         vim.opt.cmdheight = 0
     end
 end, { desc = "Toggle cmdheight" })
+
+-- Toggle typewriter mode {{{2
+vim.keymap.set("n", "<leader>tm", function()
+    if vim.opt.scrolloff:get() == 999 then
+        vim.opt.scrolloff = 5
+        notify.notify_floating("Typewriter Mode: OFF")
+    else
+        vim.opt.scrolloff = 999
+        notify.notify_floating("Typewriter Mode: ON")
+    end
+end, { desc = "Toggle typewriter mode" })
 
 -- Show full error message in floating window {{{2
 k.set(

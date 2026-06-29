@@ -23,8 +23,8 @@ o.showmode = false -- Statusline usually handles this
 o.laststatus = 3 -- Global statusline
 
 -- Scrolling & Splits
-o.scrolloff = 8
-o.sidescrolloff = 8
+o.scrolloff = 5
+o.sidescrolloff = 5
 o.splitbelow = true
 o.splitright = true
 
