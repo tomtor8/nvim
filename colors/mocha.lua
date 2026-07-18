@@ -8,11 +8,11 @@ vim.g.colors_name = "catppuccin-mocha"
 -- 2. Centralized Color Palette (Catppuccin Mocha Spec)
 local colors = {
     bg = "#0b0e14", -- Base
-    fg = "#cdd6f4", -- Text
+    fg = "#a6adc8", -- Text
     fold = "#6c7086", -- Overlay 0
     panel = "#181825", -- Mantle
     border = "#11111b", -- Crust
-    comment = "#a6adc8", -- Subtext 0
+    comment = "#6c7086", -- Subtext 0
     gutter = "#45475a", -- Surface 1
     non_text = "#585b70", -- Surface 2
     pmenu_fg = "#bac2de", -- Subtext 1
